@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Modal, TouchableOpacity, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import QRCode from 'react-native-qrcode-svg';
 import { useAuth } from '@/contexts/AuthContext';
 
 interface QRTicketProps {
@@ -98,12 +99,15 @@ export default function QRTicket({ visible, onClose, event }: QRTicketProps) {
             <View style={styles.qrSection}>
               <Text style={styles.qrTitle}>Scan for Entry</Text>
               <View style={styles.qrContainer}>
-                <View style={styles.qrPlaceholder}>
-                  <Text style={styles.qrPlaceholderText}>QR Code</Text>
-                  <Text style={styles.qrPlaceholderSubtext}>
-                    {user?.studentId || 'N/A'}
-                  </Text>
-                </View>
+                <QRCode
+                  value={qrValue}
+                  size={200}
+                  color="black"
+                  backgroundColor="white"
+                  logo={{uri: 'https://images.pexels.com/photos/267350/pexels-photo-267350.jpeg?auto=compress&cs=tinysrgb&w=50&h=50&dpr=2'}}
+                  logoSize={30}
+                  logoBackgroundColor="transparent"
+                />
               </View>
               <Text style={styles.qrSubtext}>Present this QR code at the event entrance</Text>
             </View>
@@ -249,32 +253,13 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: 'white',
     borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-  },
-  qrPlaceholder: {
-    width: 200,
-    height: 200,
-    backgroundColor: '#F3F4F6',
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#E5E7EB',
-    borderStyle: 'dashed',
-  },
-  qrPlaceholderText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#6B7280',
-    marginBottom: 8,
-  },
-  qrPlaceholderSubtext: {
-    fontSize: 14,
-    color: '#9CA3AF',
   },
   qrSubtext: {
     fontSize: 12,

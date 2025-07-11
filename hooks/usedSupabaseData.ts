@@ -236,35 +236,75 @@ const mockCampusEvents = [
 ];
 
 // Generic hook for mock data
-export function useMockData<T>(data: T[], delay = 500) {
+export function useMockData<T>(data: T[], delay = 500, storageKey?: string) {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setItems(data);
+    const loadData = async () => {
+      if (storageKey) {
+        try {
+          const stored = await AsyncStorage.getItem(storageKey);
+          if (stored) {
+            setItems(JSON.parse(stored));
+          } else {
+            setItems(data);
+            await AsyncStorage.setItem(storageKey, JSON.stringify(data));
+          }
+        } catch (error) {
+          setItems(data);
+        }
+      } else {
+        setItems(data);
+      }
       setLoading(false);
-    }, delay);
+    };
+
+    const timer = setTimeout(loadData, delay);
 
     return () => clearTimeout(timer);
-  }, [data, delay]);
+  }, [data, delay, storageKey]);
 
   const refetch = () => {
     setLoading(true);
     setError(null);
-    setTimeout(() => {
-      setItems(data);
+    setTimeout(async () => {
+      if (storageKey) {
+        try {
+          const stored = await AsyncStorage.getItem(storageKey);
+          if (stored) {
+            setItems(JSON.parse(stored));
+          } else {
+            setItems(data);
+          }
+        } catch (error) {
+          setItems(data);
+        }
+      } else {
+        setItems(data);
+      }
       setLoading(false);
     }, delay);
   };
 
-  return { data: items, loading, error, refetch };
+  const updateData = async (newData: T[]) => {
+    setItems(newData);
+    if (storageKey) {
+      try {
+        await AsyncStorage.setItem(storageKey, JSON.stringify(newData));
+      } catch (error) {
+        console.error('Error saving data:', error);
+      }
+    }
+  };
+
+  return { data: items, loading, error, refetch, updateData };
 }
 
 // Specific hooks for each data type
 export function useEvents() {
-  return useMockData(mockEvents);
+  return useMockData(mockEvents, 500, 'events');
 }
 
 export function useNews() {
@@ -284,7 +324,7 @@ export function useCampusEvents() {
 }
 
 // Mock insert hook
-export function useSupabaseInsert<T>(table: string) {
+export function useSupabaseInsert(table: string) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -294,6 +334,25 @@ export function useSupabaseInsert<T>(table: string) {
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 500));
+    
+    // If inserting into events table, add to stored events
+    if (table === 'events') {
+      try {
+        const stored = await AsyncStorage.getItem('events');
+        const events = stored ? JSON.parse(stored) : mockEvents;
+        const newEvent = {
+          ...data,
+          id: Date.now().toString(),
+          user_id: 'mock-user',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        const updatedEvents = [...events, newEvent];
+        await AsyncStorage.setItem('events', JSON.stringify(updatedEvents));
+      } catch (error) {
+        console.error('Error saving event:', error);
+      }
+    }
     
     setLoading(false);
     return true;

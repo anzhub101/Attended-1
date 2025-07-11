@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNews } from '../../hooks/usedSupabaseData';
 import { useRouter } from 'expo-router';
-import { useSupabaseInsert, useCampusEvents, useUserEventRegistrations } from '../../hooks/usedSupabaseData';
+import { useSupabaseInsert, useCampusEvents, useUserEventRegistrations, useEvents } from '../../hooks/usedSupabaseData';
 import QRTicket from '../../components/QRTicket';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -21,6 +21,7 @@ export default function EventsScreen() {
     unregisterFromEvent,
     loading: registrationsLoading 
   } = useUserEventRegistrations();
+  const { refetch: refetchEvents } = useEvents();
   const { insert: insertEvent } = useSupabaseInsert('events');
   const [showQRTicket, setShowQRTicket] = useState(false);
   const [selectedEventForTicket, setSelectedEventForTicket] = useState<any>(null);
@@ -81,9 +82,9 @@ export default function EventsScreen() {
     const success = await insertEvent(calendarEvent);
     
     if (success) {
-      // Mark as registered and navigate to schedule
+      // Mark as registered and refresh events
       await registerForEvent(event.id);
-      router.push('/(tabs)/schedule');
+      refetchEvents(); // Refresh calendar events
     }
   };
 
