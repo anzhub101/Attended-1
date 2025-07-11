@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNews } from '../../hooks/useSupabaseData';
+import { useNews } from '../../hooks/usedSupabaseData';
 import { useRouter } from 'expo-router';
-import { useSupabaseInsert, useCampusEvents, useUserEventRegistrations } from '../../hooks/useSupabaseData';
+import { useSupabaseInsert, useCampusEvents, useUserEventRegistrations } from '../../hooks/usedSupabaseData';
 import QRTicket from '../../components/QRTicket';
 import { useAuth } from '../../contexts/AuthContext';
 
