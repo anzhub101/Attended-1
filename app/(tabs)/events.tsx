@@ -331,7 +331,6 @@ export default function EventsScreen() {
                       setShowQRTicket(true);
                     }}
                   >
-                    <Image source={{ uri: event.image }} style={styles.ticketEventImage} />
                     <View style={styles.ticketEventContent}>
                       <View style={styles.ticketEventHeader}>
                         <Text style={styles.ticketEventTitle}>{event.title}</Text>
@@ -654,16 +653,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 12,
     marginBottom: 16,
-    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
-  },
-  ticketEventImage: {
-    width: '100%',
-    height: 120,
   },
   ticketEventContent: {
     padding: 16,
