@@ -106,6 +106,34 @@ export default function LoginScreen() {
               </View>
             ) : null}
 
+            {/* Demo Credentials Display */}
+            <View style={styles.demoCredentialsContainer}>
+              <View style={styles.demoHeader}>
+                <Ionicons name="information-circle" size={20} color="#2563EB" />
+                <Text style={styles.demoTitle}>Demo Login Credentials</Text>
+              </View>
+              <View style={styles.demoCredentials}>
+                <View style={styles.demoRow}>
+                  <Text style={styles.demoLabel}>Email:</Text>
+                  <Text style={styles.demoValue}>demo@student.com</Text>
+                </View>
+                <View style={styles.demoRow}>
+                  <Text style={styles.demoLabel}>Password:</Text>
+                  <Text style={styles.demoValue}>demo123</Text>
+                </View>
+              </View>
+              <TouchableOpacity 
+                style={styles.autofillButton}
+                onPress={() => {
+                  setEmail('demo@student.com');
+                  setPassword('demo123');
+                }}
+              >
+                <Ionicons name="flash" size={16} color="#2563EB" />
+                <Text style={styles.autofillText}>Auto-fill Demo Credentials</Text>
+              </TouchableOpacity>
+            </View>
+
             {/* Login Form */}
             <View style={styles.formSection}>
 
@@ -330,5 +358,61 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     alignSelf: 'center',
     marginBottom: 30,
+  },
+  demoCredentialsContainer: {
+    backgroundColor: '#EFF6FF',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 24,
+    borderWidth: 1,
+    borderColor: '#DBEAFE',
+  },
+  demoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+    gap: 8,
+  },
+  demoTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#1E40AF',
+  },
+  demoCredentials: {
+    marginBottom: 12,
+  },
+  demoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 6,
+  },
+  demoLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+    color: '#374151',
+  },
+  demoValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1F2937',
+    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+  },
+  autofillButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#DBEAFE',
+    gap: 6,
+  },
+  autofillText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2563EB',
   },
 });
