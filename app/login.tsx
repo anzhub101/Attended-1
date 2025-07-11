@@ -9,7 +9,9 @@ import {
   Dimensions,
   Alert,
   KeyboardAvoidingView,
-  Platform
+  Platform,
+  TouchableWithoutFeedback,
+  Keyboard
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -58,7 +60,8 @@ export default function LoginScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
       {/* Curved Background - Moved higher up */}
       <View style={styles.backgroundContainer}>
         <LinearGradient
@@ -171,7 +174,8 @@ export default function LoginScreen() {
 
         </SafeAreaView>
       </KeyboardAvoidingView>
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
