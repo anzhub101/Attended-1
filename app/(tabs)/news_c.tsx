@@ -13,7 +13,7 @@ import {
 } from "@howljs/calendar-kit";
 import { EventData } from "../../components/EventForm";
 import EventForm from "../../components/EventForm";
-import { useEvents, useSupabaseInsert, useSupabaseDelete } from '../../hooks/useSupabaseData';
+import { useEvents, useSupabaseInsert, useSupabaseDelete } from '../../hooks/usedSupabaseData';
 
 export enum CalendarViewType {
   OneDay = 'OneDay',
