@@ -108,6 +108,13 @@ export default function LoginScreen() {
 
             {/* Login Form */}
             <View style={styles.formSection}>
+              {/* Demo Credentials Info */}
+              <View style={styles.demoCredentialsContainer}>
+                <Text style={styles.demoCredentialsTitle}>Demo Credentials:</Text>
+                <Text style={styles.demoCredentialsText}>Email: demo@student.com</Text>
+                <Text style={styles.demoCredentialsText}>Password: demo123</Text>
+              </View>
+
               {/* Email Input */}
               <View style={styles.inputContainer}>
                 <View style={styles.inputWrapper}>
@@ -329,5 +336,24 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     alignSelf: 'center',
     marginBottom: 30,
+  },
+  demoCredentialsContainer: {
+    backgroundColor: '#F3F4F6',
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  demoCredentialsTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 4,
+  },
+  demoCredentialsText: {
+    fontSize: 13,
+    color: '#6B7280',
+    fontFamily: 'monospace',
   },
 });

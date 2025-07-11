@@ -64,6 +64,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
+      // Check for demo credentials first
+      if (email === 'demo@student.com' && password === 'demo123') {
+        // Create a mock session for demo user
+        const mockUser = {
+          id: 'demo-user-id',
+          email: 'demo@student.com',
+          name: 'Demo Student',
+          studentId: 'STU001',
+        };
+        setUser(mockUser);
+        setSession({ user: { id: 'demo-user-id', email: 'demo@student.com', user_metadata: { name: 'Demo Student', student_id: 'STU001' } } });
+        return true;
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
