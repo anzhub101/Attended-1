@@ -13,7 +13,7 @@ import {
 } from "@howljs/calendar-kit";
 import { EventData } from "../../components/EventForm";
 import EventForm from "../../components/EventForm";
-import { useEvents, useSupabaseInsert, useSupabaseDelete } from '../../hooks/usedSupabaseData';
+// import { useEvents, useSupabaseInsert, useSupabaseDelete } from '../../hooks/usedSupabaseData';
 
 export enum CalendarViewType {
   OneDay = 'OneDay',
@@ -23,9 +23,9 @@ export enum CalendarViewType {
 
 
 export default function ScheduleScreen() {
-  const { data: supabaseEvents, loading: eventsLoading, refetch } = useEvents();
-  const { insert: insertEvent } = useSupabaseInsert('events');
-  const { deleteItem: deleteEventFromDB } = useSupabaseDelete('events');
+  // const { data: supabaseEvents, loading: eventsLoading, refetch } = useEvents();
+  // const { insert: insertEvent } = useSupabaseInsert('events');
+  // const { deleteItem: deleteEventFromDB } = useSupabaseDelete('events');
   const [numberOfDays, setNumberOfDays] = useState<number>(5);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedEvent, setSelectedEvent] = useState<PackedEvent | null>(null);
@@ -37,32 +37,33 @@ export default function ScheduleScreen() {
   const calendarRef = useRef<CalendarKitHandle>(null);
 
   // Convert Supabase events to EventData format
-  const events: EventData[] = supabaseEvents.map(event => ({
-    id: event.id,
-    title: event.title,
-    subtitle: event.subtitle,
-    description: event.description,
-    location: event.location,
-    start: { dateTime: event.start_time },
-    end: { dateTime: event.end_time },
-    color: event.color,
-  }));
+  // const events: EventData[] = supabaseEvents.map(event => ({
+  //   id: event.id,
+  //   title: event.title,
+  //   subtitle: event.subtitle,
+  //   description: event.description,
+  //   location: event.location,
+  //   start: { dateTime: event.start_time },
+  //   end: { dateTime: event.end_time },
+  //   color: event.color,
+  // }));
+  const events: EventData[] = [];
 
   const handleEventAdded = async (newEvent: EventData) => {
-    const success = await insertEvent({
-      title: newEvent.title,
-      subtitle: newEvent.subtitle,
-      description: newEvent.description,
-      location: newEvent.location,
-      start_time: newEvent.start.dateTime,
-      end_time: newEvent.end.dateTime,
-      color: newEvent.color,
-      category: 'personal',
-    });
-    
-    if (success) {
-      refetch(); // Refresh the events from database
-    }
+    // const success = await insertEvent({
+    //   title: newEvent.title,
+    //   subtitle: newEvent.subtitle,
+    //   description: newEvent.description,
+    //   location: newEvent.location,
+    //   start_time: newEvent.start.dateTime,
+    //   end_time: newEvent.end.dateTime,
+    //   color: newEvent.color,
+    //   category: 'personal',
+    // });
+    // 
+    // if (success) {
+    //   refetch(); // Refresh the events from database
+    // }
     setShowEventForm(false);
   };
 
@@ -167,10 +168,10 @@ export default function ScheduleScreen() {
   };
 
   const deleteEvent = async (eventId: string) => {
-    const success = await deleteEventFromDB(eventId);
-    if (success) {
-      refetch(); // Refresh the events from database
-    }
+    // const success = await deleteEventFromDB(eventId);
+    // if (success) {
+    //   refetch(); // Refresh the events from database
+    // }
     setModalVisible(false);
     setSelectedEvent(null);
   };
@@ -241,11 +242,11 @@ export default function ScheduleScreen() {
 
         {/* Full Width Calendar */}
         <View style={styles.calendarWrapper}>
-          {eventsLoading ? (
-            <View style={styles.loadingContainer}>
-              <Text style={styles.loadingText}>Loading schedule...</Text>
-            </View>
-          ) : (
+          {/* {eventsLoading ? ( */}
+          {/*   <View style={styles.loadingContainer}> */}
+          {/*     <Text style={styles.loadingText}>Loading schedule...</Text> */}
+          {/*   </View> */}
+          {/* ) : ( */}
             <CalendarContainer
               events={events} 
               ref={calendarRef}
@@ -271,7 +272,7 @@ export default function ScheduleScreen() {
               <CalendarHeader />
               <CalendarBody renderEvent={renderEvent} />
             </CalendarContainer>
-          )}
+          {/* )} */}
         </View>
 
         {/* Date Picker Modal */}
