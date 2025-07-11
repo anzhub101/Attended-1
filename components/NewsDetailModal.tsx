@@ -9,7 +9,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from 'react-native';
-import X from 'lucide-react-native/lib/icons/x';
+import X from 'lucide-react-native';
 
 interface NewsItem {
   id: string;
