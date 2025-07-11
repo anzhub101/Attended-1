@@ -9,7 +9,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useNews } from '../../hooks/usedSupabaseData';
-import NewsDetailModal from '../../components/NewsDetailModal';
+import { NewsDetailModal } from '../../components/NewsDetailModal';
 
 interface NewsItem {
   id: string;
