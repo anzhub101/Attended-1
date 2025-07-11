@@ -9,6 +9,7 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
     "@expo/vector-icons": "^14.1.0",
     "@howljs/calendar-kit": "^2.0.0",
     "@lucide/lab": "^0.1.2",
