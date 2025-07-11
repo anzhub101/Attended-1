@@ -108,12 +108,6 @@ export default function LoginScreen() {
 
             {/* Login Form */}
             <View style={styles.formSection}>
-              {/* Demo Credentials Info */}
-              <View style={styles.demoCredentialsContainer}>
-                <Text style={styles.demoCredentialsTitle}>Demo Credentials:</Text>
-                <Text style={styles.demoCredentialsText}>Email: demo@student.com</Text>
-                <Text style={styles.demoCredentialsText}>Password: demo123</Text>
-              </View>
 
               {/* Email Input */}
               <View style={styles.inputContainer}>
