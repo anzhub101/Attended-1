@@ -21,21 +21,10 @@ export function useSupabaseData<T extends keyof Tables>(
   const { session } = useAuth();
 
   useEffect(() => {
-    if (session?.user) {
-      fetchData();
-    } else {
-      setData([]);
-      setLoading(false);
-    }
+    fetchData();
   }, [table, session]);
 
   const fetchData = async () => {
-    if (!session?.user) {
-      setData([]);
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
       setError(null);
@@ -43,7 +32,7 @@ export function useSupabaseData<T extends keyof Tables>(
       let query = supabase.from(table).select('*');
 
       // Add user filtering for user-specific tables
-      if (['events', 'assignments'].includes(table)) {
+      if (['events', 'assignments'].includes(table) && session?.user) {
         query = query.eq('user_id', session.user.id);
       }
 
@@ -124,7 +113,7 @@ export function useSupabaseInsert<T extends keyof Tables>(table: T) {
   const { session } = useAuth();
 
   const insert = async (data: Tables[T]['Insert']) => {
-    if (!session?.user) {
+    if (!session?.user && ['events', 'assignments'].includes(table)) {
       setError('User not authenticated');
       return false;
     }
@@ -135,7 +124,7 @@ export function useSupabaseInsert<T extends keyof Tables>(table: T) {
 
       // Add user_id for user-specific tables
       let insertData = data;
-      if (['events', 'assignments'].includes(table)) {
+      if (['events', 'assignments'].includes(table) && session?.user) {
         insertData = { ...data, user_id: session.user.id } as Tables[T]['Insert'];
       }
 
@@ -166,7 +155,7 @@ export function useSupabaseUpdate<T extends keyof Tables>(table: T) {
   const { session } = useAuth();
 
   const update = async (id: string, data: Tables[T]['Update']) => {
-    if (!session?.user) {
+    if (!session?.user && ['events', 'assignments'].includes(table)) {
       setError('User not authenticated');
       return false;
     }
@@ -178,7 +167,7 @@ export function useSupabaseUpdate<T extends keyof Tables>(table: T) {
       let query = supabase.from(table).update(data).eq('id', id);
 
       // Add user filtering for user-specific tables
-      if (['events', 'assignments'].includes(table)) {
+      if (['events', 'assignments'].includes(table) && session?.user) {
         query = query.eq('user_id', session.user.id);
       }
 
@@ -207,7 +196,7 @@ export function useSupabaseDelete<T extends keyof Tables>(table: T) {
   const { session } = useAuth();
 
   const deleteItem = async (id: string) => {
-    if (!session?.user) {
+    if (!session?.user && ['events', 'assignments'].includes(table)) {
       setError('User not authenticated');
       return false;
     }
@@ -219,7 +208,7 @@ export function useSupabaseDelete<T extends keyof Tables>(table: T) {
       let query = supabase.from(table).delete().eq('id', id);
 
       // Add user filtering for user-specific tables
-      if (['events', 'assignments'].includes(table)) {
+      if (['events', 'assignments'].includes(table) && session?.user) {
         query = query.eq('user_id', session.user.id);
       }
 
