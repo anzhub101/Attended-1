@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface User {
   id: string;
@@ -32,18 +33,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simulate checking for existing session
-    const timer = setTimeout(() => {
-      // Check if user was previously logged in (mock localStorage check)
-      const savedUser = localStorage.getItem('mockUser');
-      if (savedUser) {
-        setUser(JSON.parse(savedUser));
-        setSession({ user: JSON.parse(savedUser) });
+    // Check for existing session
+    const checkExistingSession = async () => {
+      try {
+        const savedUser = await AsyncStorage.getItem('mockUser');
+        if (savedUser) {
+          const userData = JSON.parse(savedUser);
+          setUser(userData);
+          setSession({ user: userData });
+        }
+      } catch (error) {
+        console.error('Error loading saved user:', error);
       }
       setIsLoading(false);
-    }, 1000);
+    };
 
-    return () => clearTimeout(timer);
+    checkExistingSession();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -56,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const userData = { ...mockUser, email };
         setUser(userData);
         setSession({ user: userData });
-        localStorage.setItem('mockUser', JSON.stringify(userData));
+        await AsyncStorage.setItem('mockUser', JSON.stringify(userData));
         return true;
       }
       
@@ -86,7 +91,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       
       setUser(newUser);
       setSession({ user: newUser });
-      localStorage.setItem('mockUser', JSON.stringify(newUser));
+      await AsyncStorage.setItem('mockUser', JSON.stringify(newUser));
       return true;
     } catch (error) {
       console.error('Sign up error:', error);
@@ -98,7 +103,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setUser(null);
       setSession(null);
-      localStorage.removeItem('mockUser');
+      await AsyncStorage.removeItem('mockUser');
     } catch (error) {
       console.error('Logout error:', error);
     }
