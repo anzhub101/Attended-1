@@ -143,17 +143,8 @@ export default function NewsScreen() {
         </View>
 
         <NewsDetailModal
+          news={selectedNews}
           visible={!!selectedNews}
-          newsItem={selectedNews ? {
-            id: selectedNews.id,
-            title: selectedNews.title,
-            content: selectedNews.content,
-            author: selectedNews.author,
-            category: selectedNews.category,
-            publishedAt: selectedNews.published_at,
-            imageUrl: selectedNews.image_url,
-            readTime: selectedNews.read_time,
-          } : null}
           onClose={() => setSelectedNews(null)}
         />
       </SafeAreaView>
