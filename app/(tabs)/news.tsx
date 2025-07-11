@@ -8,7 +8,7 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../../lib/supabase';
 import NewsDetailModal from '../../components/NewsDetailModal';
 
 interface NewsItem {
