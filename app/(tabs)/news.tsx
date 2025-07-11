@@ -8,7 +8,7 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
-import { supabase } from '../../../lib/supabase';
+import { useNews } from '../../hooks/usedSupabaseData';
 import NewsDetailModal from '../../components/NewsDetailModal';
 
 interface NewsItem {
@@ -24,35 +24,14 @@ interface NewsItem {
 }
 
 export default function NewsScreen() {
-  const [news, setNews] = useState<NewsItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: news, loading, refetch } = useNews();
   const [selectedNews, setSelectedNews] = useState<NewsItem | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
-  const fetchNews = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('news')
-        .select('*')
-        .order('published_at', { ascending: false });
-
-      if (error) throw error;
-      setNews(data || []);
-    } catch (error) {
-      console.error('Error fetching news:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchNews();
-  }, []);
-
   const onRefresh = () => {
     setRefreshing(true);
-    fetchNews();
+    refetch();
+    setRefreshing(false);
   };
 
   const formatDate = (dateString: string) => {
