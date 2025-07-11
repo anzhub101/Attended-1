@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,8 @@ import {
   Image,
   RefreshControl,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNews } from '../../hooks/usedSupabaseData';
 import { NewsDetailModal } from '../../components/NewsDetailModal';
 
@@ -56,79 +58,96 @@ export default function NewsScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>Loading news...</Text>
+      <View style={styles.container}>
+        <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>News</Text>
+            <TouchableOpacity style={styles.filterButton}>
+              <Ionicons name="options" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.contentArea}>
+            <View style={styles.loadingContainer}>
+              <Text style={styles.loadingText}>Loading news...</Text>
+            </View>
+          </View>
+        </SafeAreaView>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <ScrollView
-        style={styles.scrollView}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
+      <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+        {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Campus News</Text>
-          <Text style={styles.headerSubtitle}>Stay updated with the latest</Text>
+          <Text style={styles.headerTitle}>News</Text>
+          <TouchableOpacity style={styles.filterButton}>
+            <Ionicons name="options" size={24} color="white" />
+          </TouchableOpacity>
         </View>
 
-        <View style={styles.newsContainer}>
-          {news.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={styles.newsCard}
-              onPress={() => setSelectedNews(item)}
-            >
-              {item.image_url && (
-                <Image source={{ uri: item.image_url }} style={styles.newsImage} />
-              )}
-              
-              <View style={styles.newsContent}>
-                <View style={styles.newsHeader}>
-                  <View
-                    style={[
-                      styles.categoryBadge,
-                      { backgroundColor: getCategoryColor(item.category) },
-                    ]}
-                  >
-                    <Text style={styles.categoryText}>{item.category}</Text>
-                  </View>
-                  <Text style={styles.readTime}>{item.read_time}</Text>
-                </View>
-
-                <Text style={styles.newsTitle} numberOfLines={2}>
-                  {item.title}
-                </Text>
-                
-                <Text style={styles.newsDescription} numberOfLines={3}>
-                  {item.description}
-                </Text>
-
-                <View style={styles.newsFooter}>
-                  <Text style={styles.author}>By {item.author}</Text>
-                  <Text style={styles.date}>{formatDate(item.published_at)}</Text>
-                </View>
+        {/* Content Area */}
+        <View style={styles.contentArea}>
+          <ScrollView
+            style={styles.newsContainer}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            {news.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>No news available</Text>
+                <Text style={styles.emptySubtext}>Check back later for updates</Text>
               </View>
-            </TouchableOpacity>
-          ))}
+            ) : (
+              news.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={styles.newsCard}
+                  onPress={() => setSelectedNews(item)}
+                >
+                  <Image source={{ uri: item.image_url }} style={styles.newsImage} />
+                  
+                  <View style={styles.newsContent}>
+                    <View style={styles.newsHeader}>
+                      <View
+                        style={[
+                          styles.categoryBadge,
+                          { backgroundColor: getCategoryColor(item.category) },
+                        ]}
+                      >
+                        <Text style={styles.categoryText}>{item.category}</Text>
+                      </View>
+                      <Text style={styles.readTime}>{item.read_time}</Text>
+                    </View>
+
+                    <Text style={styles.newsTitle} numberOfLines={2}>
+                      {item.title}
+                    </Text>
+                    
+                    <Text style={styles.newsDescription} numberOfLines={3}>
+                      {item.description}
+                    </Text>
+
+                    <View style={styles.newsFooter}>
+                      <Text style={styles.author}>By {item.author}</Text>
+                      <Text style={styles.date}>{formatDate(item.published_at)}</Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              ))
+            )}
+          </ScrollView>
         </View>
 
-        {news.length === 0 && (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyText}>No news available</Text>
-            <Text style={styles.emptySubtext}>Check back later for updates</Text>
-          </View>
-        )}
-      </ScrollView>
-
-      <NewsDetailModal
-        news={selectedNews}
-        visible={!!selectedNews}
-        onClose={() => setSelectedNews(null)}
-      />
+        <NewsDetailModal
+          news={selectedNews}
+          visible={!!selectedNews}
+          onClose={() => setSelectedNews(null)}
+        />
+      </SafeAreaView>
     </View>
   );
 }
@@ -136,96 +155,89 @@ export default function NewsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
+    backgroundColor: '#DC2626',
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f8f9fa',
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#666',
-  },
-  scrollView: {
+  safeArea: {
     flex: 1,
   },
   header: {
-    padding: 20,
-    paddingTop: 60,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    backgroundColor: '#DC2626',
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    color: '#212529',
-    marginBottom: 4,
+    color: 'white',
   },
-  headerSubtitle: {
-    fontSize: 16,
-    color: '#6c757d',
+  filterButton: {
+    padding: 8,
+  },
+  contentArea: {
+    flex: 1,
+    backgroundColor: '#F3F4F6',
   },
   newsContainer: {
-    padding: 16,
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
   newsCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    backgroundColor: 'white',
+    borderRadius: 16,
+    marginBottom: 20,
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   newsImage: {
     width: '100%',
     height: 200,
-    resizeMode: 'cover',
   },
   newsContent: {
-    padding: 16,
+    padding: 20,
   },
   newsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 10,
   },
   categoryBadge: {
+    backgroundColor: '#EFF6FF',
     paddingHorizontal: 8,
     paddingVertical: 4,
-    borderRadius: 12,
+    borderRadius: 6,
   },
   categoryText: {
-    color: '#fff',
     fontSize: 12,
     fontWeight: '600',
-    textTransform: 'capitalize',
+    color: 'white',
   },
   readTime: {
     fontSize: 12,
-    color: '#6c757d',
+    color: '#6B7280',
   },
   newsTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#212529',
-    marginBottom: 8,
+    color: '#1F2937',
+    marginBottom: 12,
     lineHeight: 24,
   },
   newsDescription: {
     fontSize: 14,
-    color: '#6c757d',
+    color: '#6B7280',
     lineHeight: 20,
-    marginBottom: 12,
+    marginBottom: 16,
   },
   newsFooter: {
     flexDirection: 'row',
@@ -239,21 +251,33 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 12,
-    color: '#6c757d',
+    color: '#6B7280',
   },
-  emptyState: {
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: '#6B7280',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
     padding: 40,
   },
   emptyText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#495057',
+    fontSize: 16,
+    color: '#9CA3AF',
+    textAlign: 'center',
     marginBottom: 8,
   },
   emptySubtext: {
     fontSize: 14,
-    color: '#6c757d',
+    color: '#D1D5DB',
     textAlign: 'center',
   },
 });
