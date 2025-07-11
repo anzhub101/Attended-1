@@ -331,23 +331,4 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 30,
   },
-  demoCredentialsContainer: {
-    backgroundColor: '#F3F4F6',
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#E5E7EB',
-  },
-  demoCredentialsTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: 4,
-  },
-  demoCredentialsText: {
-    fontSize: 13,
-    color: '#6B7280',
-    fontFamily: 'monospace',
-  },
 });
