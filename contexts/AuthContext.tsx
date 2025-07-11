@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '../lib/supabase';
+import type { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface User {
   id: string;
@@ -10,7 +11,7 @@ interface User {
 
 interface AuthContextType {
   user: User | null;
-  session: any;
+  session: any | null;
   login: (email: string, password: string) => Promise<boolean>;
   signUp: (email: string, password: string, userData: { name: string; studentId: string; department?: string; faculty?: string; phone?: string }) => Promise<boolean>;
   logout: () => Promise<void>;
@@ -19,13 +20,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock user data
-const mockUser: User = {
-  id: 'mock-user-id',
-  email: 'student@adu.ac.ae',
-  name: 'Ahmed Al-Mansouri',
-  studentId: 'ADU2024001',
-};
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
@@ -33,35 +27,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
-    const checkExistingSession = async () => {
-      try {
-        const savedUser = await AsyncStorage.getItem('mockUser');
-        if (savedUser) {
-          const userData = JSON.parse(savedUser);
-          setUser(userData);
-          setSession({ user: userData });
-        }
-      } catch (error) {
-        console.error('Error loading saved user:', error);
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email || '',
+          name: session.user.user_metadata?.name || 'Student',
+          studentId: session.user.user_metadata?.student_id || 'N/A',
+        });
       }
       setIsLoading(false);
-    };
+    });
 
-    checkExistingSession();
+    // Listen for auth changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session?.user) {
+        setUser({
+          id: session.user.id,
+          email: session.user.email || '',
+          name: session.user.user_metadata?.name || 'Student',
+          studentId: session.user.user_metadata?.student_id || 'N/A',
+        });
+      } else {
+        setUser(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock authentication - accept any email/password for demo
-      if (email && password) {
-        const userData = { ...mockUser, email };
-        setUser(userData);
-        setSession({ user: userData });
-        await AsyncStorage.setItem('mockUser', JSON.stringify(userData));
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error('Login error:', error.message);
+        return false;
+      }
+
+      if (data.user) {
         return true;
       }
       
@@ -78,21 +91,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     userData: { name: string; studentId: string; department?: string; faculty?: string; phone?: string }
   ): Promise<boolean> => {
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock sign up - create user with provided data
-      const newUser: User = {
-        id: 'mock-user-' + Date.now(),
+      const { data, error } = await supabase.auth.signUp({
         email,
-        name: userData.name,
-        studentId: userData.studentId,
-      };
-      
-      setUser(newUser);
-      setSession({ user: newUser });
-      await AsyncStorage.setItem('mockUser', JSON.stringify(newUser));
-      return true;
+        password,
+        options: {
+          data: {
+            name: userData.name,
+            student_id: userData.studentId,
+            department: userData.department,
+            faculty: userData.faculty,
+            phone: userData.phone,
+          },
+        },
+      });
+
+      if (error) {
+        console.error('Sign up error:', error.message);
+        return false;
+      }
+
+      return !!data.user;
     } catch (error) {
       console.error('Sign up error:', error);
       return false;
@@ -101,9 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
-      setUser(null);
-      setSession(null);
-      await AsyncStorage.removeItem('mockUser');
+      await supabase.auth.signOut();
     } catch (error) {
       console.error('Logout error:', error);
     }
