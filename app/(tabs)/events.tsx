@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput, Platform } from 'react-native';
+import { Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNews } from '../../hooks/usedSupabaseData';
@@ -8,6 +9,17 @@ import { useSupabaseInsert, useCampusEvents, useUserEventRegistrations, useEvent
 import QRTicket from '../../components/QRTicket';
 import { useAuth } from '../../contexts/AuthContext';
 
+interface RegisteredEvent {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  location: string;
+  event_date: string;
+  event_time: string;
+  author: string;
+  category: string;
+}
 
 export default function EventsScreen() {
   const router = useRouter();
@@ -25,6 +37,7 @@ export default function EventsScreen() {
   const { insert: insertEvent } = useSupabaseInsert('events');
   const [showQRTicket, setShowQRTicket] = useState(false);
   const [selectedEventForTicket, setSelectedEventForTicket] = useState<any>(null);
+  const [showRegisteredEvents, setShowRegisteredEvents] = useState(false);
   
   const categories = [
     { name: 'All', icon: 'grid-outline' },
@@ -102,6 +115,14 @@ export default function EventsScreen() {
     setShowQRTicket(true);
   };
 
+  const getRegisteredEventsList = (): RegisteredEvent[] => {
+    return events.filter(event => registeredEvents.includes(event.id));
+  };
+
+  const showRegisteredEventsList = () => {
+    setShowRegisteredEvents(true);
+  };
+
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
@@ -114,11 +135,7 @@ export default function EventsScreen() {
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.ticketButton}
-              onPress={() => {
-                if (events.length > 0) {
-                  showTicket(events[0]); // Show ticket for first event as example
-                }
-              }}
+              onPress={showRegisteredEventsList}
             >
               <Ionicons name="ticket" size={24} color="white" />
             </TouchableOpacity>
@@ -272,6 +289,79 @@ export default function EventsScreen() {
           onClose={() => setShowQRTicket(false)}
           event={selectedEventForTicket}
         />
+
+        {/* Registered Events Modal */}
+        <Modal
+          visible={showRegisteredEvents}
+          animationType="slide"
+          presentationStyle="pageSheet"
+          onRequestClose={() => setShowRegisteredEvents(false)}
+        >
+          <SafeAreaView style={styles.modalContainer}>
+            {/* Modal Header */}
+            <View style={styles.modalHeader}>
+              <TouchableOpacity 
+                onPress={() => setShowRegisteredEvents(false)} 
+                style={styles.modalCloseButton}
+              >
+                <Ionicons name="close" size={24} color="#1F2937" />
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>My Tickets</Text>
+              <View style={styles.modalPlaceholder} />
+            </View>
+
+            {/* Registered Events List */}
+            <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
+              {getRegisteredEventsList().length === 0 ? (
+                <View style={styles.emptyTicketsContainer}>
+                  <Ionicons name="ticket-outline" size={64} color="#D1D5DB" />
+                  <Text style={styles.emptyTicketsTitle}>No Tickets Yet</Text>
+                  <Text style={styles.emptyTicketsText}>
+                    Register for events to see your tickets here
+                  </Text>
+                </View>
+              ) : (
+                getRegisteredEventsList().map((event) => (
+                  <TouchableOpacity
+                    key={event.id}
+                    style={styles.ticketEventCard}
+                    onPress={() => {
+                      setSelectedEventForTicket(event);
+                      setShowRegisteredEvents(false);
+                      setShowQRTicket(true);
+                    }}
+                  >
+                    <Image source={{ uri: event.image }} style={styles.ticketEventImage} />
+                    <View style={styles.ticketEventContent}>
+                      <View style={styles.ticketEventHeader}>
+                        <Text style={styles.ticketEventTitle}>{event.title}</Text>
+                        <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+                      </View>
+                      
+                      <View style={styles.ticketEventDetails}>
+                        <View style={styles.ticketEventDetailRow}>
+                          <Ionicons name="calendar-outline" size={14} color="#6B7280" />
+                          <Text style={styles.ticketEventDetailText}>
+                            {formatEventDate(event.event_date)} at {event.event_time}
+                          </Text>
+                        </View>
+                        <View style={styles.ticketEventDetailRow}>
+                          <Ionicons name="location-outline" size={14} color="#6B7280" />
+                          <Text style={styles.ticketEventDetailText}>{event.location}</Text>
+                        </View>
+                      </View>
+
+                      <View style={styles.ticketBadge}>
+                        <Ionicons name="ticket" size={12} color="#DC2626" />
+                        <Text style={styles.ticketBadgeText}>Tap to view ticket</Text>
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                ))
+              )}
+            </ScrollView>
+          </SafeAreaView>
+        </Modal>
       </SafeAreaView>
     </View>
   );
@@ -510,5 +600,112 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#9CA3AF',
     textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalCloseButton: {
+    padding: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  modalPlaceholder: {
+    width: 34,
+  },
+  modalContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  emptyTicketsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyTicketsTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptyTicketsText: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 24,
+  },
+  ticketEventCard: {
+    backgroundColor: 'white',
+    borderRadius: 12,
+    marginBottom: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  ticketEventImage: {
+    width: '100%',
+    height: 120,
+  },
+  ticketEventContent: {
+    padding: 16,
+  },
+  ticketEventHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  ticketEventTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    flex: 1,
+  },
+  ticketEventDetails: {
+    marginBottom: 12,
+  },
+  ticketEventDetailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 4,
+  },
+  ticketEventDetailText: {
+    fontSize: 12,
+    color: '#6B7280',
+  },
+  ticketBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FEE2E2',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    alignSelf: 'flex-start',
+  },
+  ticketBadgeText: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#DC2626',
   },
 });
