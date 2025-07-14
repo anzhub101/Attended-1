@@ -80,25 +80,13 @@ export default function EventsScreen() {
   };
 
   const addToCalendar = async (event: any) => {
-    // Create a calendar event from the news/event item
-    const calendarEvent = {
-      title: event.title,
-      subtitle: `Organized by ${event.author}`,
-      description: event.description,
-      location: event.location,
-      start_time: event.event_date,
-      end_time: new Date(new Date(event.event_date).getTime() + 2 * 60 * 60 * 1000).toISOString(), // Add 2 hours
-      color: '#4285F4',
-      category: 'event',
-    };
-
-    const success = await insertEvent(calendarEvent);
-    
-    if (success) {
-      // Mark as registered and refresh events
-      await registerForEvent(event.id);
-      refetchEvents(); // Refresh calendar events
+    // Add to temporary calendar state for immediate display
+    if ((global as any).addTempCalendarEvent) {
+      (global as any).addTempCalendarEvent(event);
     }
+    
+    // Mark as registered
+    await registerForEvent(event.id);
   };
 
   const formatEventDate = (dateString: string) => {

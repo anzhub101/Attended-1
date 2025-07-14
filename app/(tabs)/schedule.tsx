@@ -27,8 +27,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Dr. Ahmed Hassan',
     description: 'Database Systems - Advanced SQL Queries',
     location: 'A-2F-13',
-    start: { dateTime: '2025-07-07T05:00:00.000Z' },
-    end: { dateTime: '2025-07-07T06:45:00.000Z' },
+    start: { dateTime: '2025-07-14T05:00:00.000Z' },
+    end: { dateTime: '2025-07-14T06:45:00.000Z' },
     color: '#4285F4',
   },
   {
@@ -37,8 +37,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Prof. Sarah Jamal',
     description: 'Linear Algebra',
     location: 'H1-11-A',
-    start: { dateTime: '2025-07-07T11:00:00.000Z' },
-    end: { dateTime: '2025-07-07T12:40:00.000Z' },
+    start: { dateTime: '2025-07-14T11:00:00.000Z' },
+    end: { dateTime: '2025-07-14T12:40:00.000Z' },
     color: '#DB4437',
   },
   {
@@ -47,8 +47,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Dr. Huma Zia',
     description: 'Physics II - Applications',
     location: 'D-0F-15',
-    start: { dateTime: '2025-07-07T08:50:00.000Z' },
-    end: { dateTime: '2025-07-07T10:20:00.000Z' },
+    start: { dateTime: '2025-07-14T08:50:00.000Z' },
+    end: { dateTime: '2025-07-14T10:20:00.000Z' },
     color: '#0F9D58',
   },
   {
@@ -57,8 +57,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Dr. Ahmed Hassan',
     description: 'Database Systems - Advanced SQL Queries',
     location: 'A-2F-13',
-    start: { dateTime: '2025-07-09T05:00:00.000Z' },
-    end: { dateTime: '2025-07-09T06:45:00.000Z' },
+    start: { dateTime: '2025-07-16T05:00:00.000Z' },
+    end: { dateTime: '2025-07-16T06:45:00.000Z' },
     color: '#4285F4',
   },
   {
@@ -67,8 +67,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Prof. Sarah Jamal',
     description: 'Linear Algebra',
     location: 'H1-11-A',
-    start: { dateTime: '2025-07-09T11:00:00.000Z' },
-    end: { dateTime: '2025-07-09T12:40:00.000Z' },
+    start: { dateTime: '2025-07-16T11:00:00.000Z' },
+    end: { dateTime: '2025-07-16T12:40:00.000Z' },
     color: '#DB4437',
   },
   {
@@ -77,8 +77,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Dr. Huma Zia',
     description: 'Physics II - Applications',
     location: 'D-0F-15',
-    start: { dateTime: '2025-07-09T08:50:00.000Z' },
-    end: { dateTime: '2025-07-09T10:20:00.000Z' },
+    start: { dateTime: '2025-07-16T08:50:00.000Z' },
+    end: { dateTime: '2025-07-16T10:20:00.000Z' },
     color: '#0F9D58',
   },
   {
@@ -87,8 +87,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Dr. Mary Jose',
     description: 'Signals and Systems',
     location: 'D-0F-12',
-    start: { dateTime: '2025-07-08T12:55:00.000Z' },
-    end: { dateTime: '2025-07-08T14:20:00.000Z' },
+    start: { dateTime: '2025-07-15T12:55:00.000Z' },
+    end: { dateTime: '2025-07-15T14:20:00.000Z' },
     color: '#F4B400',
   },
   {
@@ -97,8 +97,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Dr. Rubina Qureshi',
     description: 'Innovation Entrepreneurship',
     location: 'A-1F-02',
-    start: { dateTime: '2025-07-08T07:00:00.000Z' },
-    end: { dateTime: '2025-07-08T08:45:00.000Z' },
+    start: { dateTime: '2025-07-15T07:00:00.000Z' },
+    end: { dateTime: '2025-07-15T08:45:00.000Z' },
     color: '#9C27B0',
   },  
   {
@@ -107,8 +107,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Dr. Mary Jose',
     description: 'Signals and Systems',
     location: 'D-0F-12',
-    start: { dateTime: '2025-07-10T12:55:00.000Z' },
-    end: { dateTime: '2025-07-10T14:20:00.000Z' },
+    start: { dateTime: '2025-07-17T12:55:00.000Z' },
+    end: { dateTime: '2025-07-17T14:20:00.000Z' },
     color: '#F4B400',
   },
   {
@@ -117,8 +117,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Dr. Rubina Qureshi',
     description: 'Innovation Entrepreneurship',
     location: 'A-1F-02',
-    start: { dateTime: '2025-07-10T07:00:00.000Z' },
-    end: { dateTime: '2025-07-10T08:45:00.000Z' },
+    start: { dateTime: '2025-07-17T07:00:00.000Z' },
+    end: { dateTime: '2025-07-17T08:45:00.000Z' },
     color: '#9C27B0',
   },
   {
@@ -127,8 +127,8 @@ export const initialEvents: EventData[] = [
     subtitle: 'Prof. Hamdan',
     description: 'Electric Circuits',
     location: 'Studio H101',
-    start: { dateTime: '2025-07-11T05:00:00.000Z' },
-    end: { dateTime: '2025-07-11T06:40:00.000Z' },
+    start: { dateTime: '2025-07-18T05:00:00.000Z' },
+    end: { dateTime: '2025-07-18T06:40:00.000Z' },
     color: '#3F51B5',
   },
   {
@@ -137,14 +137,15 @@ export const initialEvents: EventData[] = [
     subtitle: 'Prof. Hamdan',
     description: 'Electric Circuits',
     location: 'Studio H101',
-    start: { dateTime: '2025-07-11T06:50:00.000Z' },
-    end: { dateTime: '2025-07-11T08:30:00.000Z' },
+    start: { dateTime: '2025-07-18T06:50:00.000Z' },
+    end: { dateTime: '2025-07-18T08:30:00.000Z' },
     color: '#3F51B5',
   },
 ];
 
 export default function ScheduleScreen() {
   const [events, setEvents] = useState<EventData[]>(initialEvents);
+  const [tempCalendarEvents, setTempCalendarEvents] = useState<EventData[]>([]);
   const [numberOfDays, setNumberOfDays] = useState<number>(5);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [selectedEvent, setSelectedEvent] = useState<PackedEvent | null>(null);
@@ -155,6 +156,32 @@ export default function ScheduleScreen() {
   const [tempDate, setTempDate] = useState<Date>(new Date());
   const calendarRef = useRef<CalendarKitHandle>(null);
 
+  // Combine regular events with temporary calendar events
+  const allEvents = [...events, ...tempCalendarEvents];
+
+  // Function to add temporary calendar event
+  const addTempCalendarEvent = (eventData: any) => {
+    const calendarEvent: EventData = {
+      id: `temp-${Date.now()}`,
+      title: eventData.title,
+      subtitle: `Organized by ${eventData.author}`,
+      description: eventData.description,
+      location: eventData.location,
+      start: { dateTime: eventData.event_date },
+      end: { dateTime: new Date(new Date(eventData.event_date).getTime() + 2 * 60 * 60 * 1000).toISOString() },
+      color: '#4285F4',
+    };
+    
+    setTempCalendarEvents(prev => [...prev, calendarEvent]);
+  };
+
+  // Expose the function globally so events page can use it
+  React.useEffect(() => {
+    (global as any).addTempCalendarEvent = addTempCalendarEvent;
+    return () => {
+      delete (global as any).addTempCalendarEvent;
+    };
+  }, []);
   const handleEventAdded = (newEvent: EventData) => {
     setEvents(currentEvents => [...currentEvents, newEvent]);
     setShowEventForm(false);
@@ -333,7 +360,7 @@ export default function ScheduleScreen() {
         {/* Full Width Calendar */}
         <View style={styles.calendarWrapper}>
           <CalendarContainer
-            events={events} 
+            events={allEvents} 
             ref={calendarRef}
             numberOfDays={numberOfDays}
             scrollByDay={true}
