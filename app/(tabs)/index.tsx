@@ -76,7 +76,7 @@ export default function DashboardScreen() {
             </View>
             <TouchableOpacity style={styles.profileButton}>
               <Image 
-                source={{ uri: '' }}
+                source={require(profile)}
                 style={styles.profileImage}
               />
             </TouchableOpacity>
@@ -89,7 +89,7 @@ export default function DashboardScreen() {
               <View style={styles.userInfo}>
                 <View style={styles.userAvatar}>
                   <Image 
-                    source={{profile }}
+                    source={ require(profile)}
                     style={styles.userAvatarImage}
                   />
                 </View>
