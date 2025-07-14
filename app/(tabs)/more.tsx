@@ -34,17 +34,6 @@ export default function MoreScreen() {
       description: 'Connect with peer tutors and academic support',
       icon: 'school',
       color: '#3B82F6',
-      comingSoon: true,
-
-    },
-    {
-      id: 2,
-      title: 'Digital Student Card',
-      description: 'Access your digital student ID and campus services',
-      icon: 'card',
-      color: '#10B981',
-      comingSoon: true,
-
     },
     {
       id: 3,
@@ -52,8 +41,6 @@ export default function MoreScreen() {
       description: 'Track your academic progress and grades',
       icon: 'analytics',
       color: '#F59E0B',
-      comingSoon: true,
-
     },
     {
       id: 4,
@@ -62,7 +49,14 @@ export default function MoreScreen() {
       icon: 'library',
       color: '#8B5CF6',
       comingSoon: true,
-
+    },
+    {
+      id: 9,
+      title: 'Student Organizations',
+      description: 'Join clubs and student organizations',
+      icon: 'people',
+      color: '#F43F5E',
+      comingSoon: true,
     },
     {
       id: 5,
@@ -96,14 +90,6 @@ export default function MoreScreen() {
       description: 'Book appointments and health resources',
       icon: 'medical',
       color: '#EC4899',
-      comingSoon: true,
-    },
-    {
-      id: 9,
-      title: 'Student Organizations',
-      description: 'Join clubs and student organizations',
-      icon: 'people',
-      color: '#F43F5E',
       comingSoon: true,
     },
   ];
