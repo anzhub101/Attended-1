@@ -89,7 +89,7 @@ export default function DashboardScreen() {
               <View style={styles.userInfo}>
                 <View style={styles.userAvatar}>
                   <Image 
-                    source={{ uri: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=150&h=150&dpr=2' }}
+                    source={{profile }}
                     style={styles.userAvatarImage}
                   />
                 </View>
