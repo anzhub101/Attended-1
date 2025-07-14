@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEvents, useNews, useAssignments, useQuickActions } from '../../hooks/usedSupabaseData';
 import { useAuth } from '../../contexts/AuthContext';
-import {profile} from '../../assets/images/IMG_1540.jpg'
 
 export default function DashboardScreen() {
   const { user } = useAuth();
@@ -76,7 +75,7 @@ export default function DashboardScreen() {
             </View>
             <TouchableOpacity style={styles.profileButton}>
               <Image 
-                source={require(profile)}
+                source={require('../../assets/images/IMG_1540.jpg')}
                 style={styles.profileImage}
               />
             </TouchableOpacity>
@@ -89,7 +88,7 @@ export default function DashboardScreen() {
               <View style={styles.userInfo}>
                 <View style={styles.userAvatar}>
                   <Image 
-                    source={ require(profile)}
+                    source={require('../../assets/images/IMG_1540.jpg')}
                     style={styles.userAvatarImage}
                   />
                 </View>
