@@ -6,7 +6,7 @@ interface User {
   email: string;
   name: string;
   studentId: string;
-}
+} 
 
 interface AuthContextType {
   user: User | null;
