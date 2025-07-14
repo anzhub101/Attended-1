@@ -34,6 +34,8 @@ export default function MoreScreen() {
       description: 'Connect with peer tutors and academic support',
       icon: 'school',
       color: '#3B82F6',
+      comingSoon: true,
+
     },
     {
       id: 2,
@@ -41,6 +43,8 @@ export default function MoreScreen() {
       description: 'Access your digital student ID and campus services',
       icon: 'card',
       color: '#10B981',
+      comingSoon: true,
+
     },
     {
       id: 3,
@@ -48,6 +52,8 @@ export default function MoreScreen() {
       description: 'Track your academic progress and grades',
       icon: 'analytics',
       color: '#F59E0B',
+      comingSoon: true,
+
     },
     {
       id: 4,
@@ -55,44 +61,37 @@ export default function MoreScreen() {
       description: 'Reserve study rooms and library resources',
       icon: 'library',
       color: '#8B5CF6',
+      comingSoon: true,
+
     },
     {
       id: 5,
-      title: 'Virtual Campus',
-      description: 'Explore the campus in 3D virtual reality',
-      icon: 'globe',
-      color: '#EF4444',
-    },
-    {
-      id: 6,
-      title: 'Course Registration',
-      description: 'Register for courses and manage your schedule',
-      icon: 'list',
-      color: '#06B6D4',
-    },
-    {
-      id: 7,
       title: 'Campus Map',
       description: 'Navigate the campus with interactive maps',
       icon: 'map',
       color: '#84CC16',
+      comingSoon: true,
+
     },
     {
-      id: 8,
+      id: 6,
       title: 'Dining Services',
       description: 'View menus and meal plan information',
       icon: 'restaurant',
       color: '#F97316',
+      comingSoon: true,
     },
     {
-      id: 9,
+      id: 7,
       title: 'Transportation',
       description: 'Campus shuttle schedules and parking info',
       icon: 'bus',
       color: '#6366F1',
+      comingSoon: true,
+
     },
     {
-      id: 10,
+      id: 8,
       title: 'Health Services',
       description: 'Book appointments and health resources',
       icon: 'medical',
@@ -100,15 +99,7 @@ export default function MoreScreen() {
       comingSoon: true,
     },
     {
-      id: 11,
-      title: 'Financial Aid',
-      description: 'Manage scholarships and financial assistance',
-      icon: 'card',
-      color: '#14B8A6',
-      comingSoon: true,
-    },
-    {
-      id: 12,
+      id: 9,
       title: 'Student Organizations',
       description: 'Join clubs and student organizations',
       icon: 'people',
