@@ -99,8 +99,13 @@ export default function MoreScreen() {
       // Show coming soon message
       return;
     }
-    // Navigate to specific feature
-    console.log(`Navigate to ${item.title}`);
+    
+    // Navigate to specific features
+    if (item.title === 'Academic Tutoring') {
+      router.push('/tutoring');
+    } else {
+      console.log(`Navigate to ${item.title}`);
+    }
   };
 
   return (
