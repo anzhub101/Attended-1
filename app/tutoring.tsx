@@ -428,21 +428,6 @@ export default function TutoringScreen() {
                   ))}
                 </View>
 
-                {/* Contact Section */}
-                <View style={styles.section}>
-                  <Text style={styles.sectionTitle}>Contact Information</Text>
-                  <View style={styles.contactItem}>
-                    <Ionicons name="mail-outline" size={16} color="#6B7280" />
-                    <Text style={styles.contactText}>{selectedTutor.email}</Text>
-                  </View>
-                  {selectedTutor.phone && (
-                    <View style={styles.contactItem}>
-                      <Ionicons name="call-outline" size={16} color="#6B7280" />
-                      <Text style={styles.contactText}>{selectedTutor.phone}</Text>
-                    </View>
-                  )}
-                </View>
-
                 {/* Contact Button */}
                 <TouchableOpacity
                   style={styles.contactButton}
