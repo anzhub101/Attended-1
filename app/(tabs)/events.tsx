@@ -118,9 +118,6 @@ export default function EventsScreen() {
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Events</Text>
           <View style={styles.headerActions}>
-            <TouchableOpacity style={styles.filterButton}>
-              <Ionicons name="options" size={24} color="white" />
-            </TouchableOpacity>
             <TouchableOpacity 
               style={styles.ticketButton}
               onPress={showRegisteredEventsList}
