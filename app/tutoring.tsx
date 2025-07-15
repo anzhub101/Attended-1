@@ -29,6 +29,27 @@ interface Tutor {
   phone?: string;
 }
 
+interface BookingRequest {
+  id: string;
+  tutorId: string;
+  studentId: string;
+  studentName: string;
+  subject: string;
+  timeSlot: string;
+  message: string;
+  status: 'pending' | 'approved' | 'rejected';
+  createdAt: string;
+}
+
+interface TutoringSession {
+  id: string;
+  tutorId: string;
+  studentId: string;
+  subject: string;
+  timeSlot: string;
+  status: 'scheduled' | 'completed' | 'cancelled';
+  createdAt: string;
+}
 const mockTutors: Tutor[] = [
   {
     id: '1',
@@ -124,6 +145,14 @@ export default function TutoringScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
   const [showTutorModal, setShowTutorModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
+  const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
+  const [tutoringSessions, setTutoringSessions] = useState<TutoringSession[]>([]);
+  const [bookingForm, setBookingForm] = useState({
+    subject: '',
+    message: '',
+  });
 
   const filteredTutors = mockTutors.filter(tutor => {
     const query = searchQuery.toLowerCase();
@@ -155,6 +184,37 @@ export default function TutoringScreen() {
     setShowTutorModal(false);
   };
 
+  const handleBookSession = (tutor: Tutor, timeSlot: string) => {
+    setSelectedTutor(tutor);
+    setSelectedTimeSlot(timeSlot);
+    setBookingForm({ subject: '', message: '' });
+    setShowTutorModal(false);
+    setShowBookingModal(true);
+  };
+
+  const submitBookingRequest = () => {
+    if (!selectedTutor || !bookingForm.subject.trim()) {
+      return;
+    }
+
+    const newRequest: BookingRequest = {
+      id: Date.now().toString(),
+      tutorId: selectedTutor.id,
+      studentId: 'current-user-id', // In real app, get from auth context
+      studentName: 'Current User', // In real app, get from auth context
+      subject: bookingForm.subject.trim(),
+      timeSlot: selectedTimeSlot,
+      message: bookingForm.message.trim(),
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    };
+
+    setBookingRequests(prev => [...prev, newRequest]);
+    setShowBookingModal(false);
+    
+    // Show success message
+    console.log('Booking request submitted successfully!');
+  };
   const renderStars = (rating: number) => {
     const stars = [];
     const fullStars = Math.floor(rating);
@@ -354,10 +414,17 @@ export default function TutoringScreen() {
                 <View style={styles.section}>
                   <Text style={styles.sectionTitle}>Available Times</Text>
                   {selectedTutor.availableTimes.map((time, index) => (
-                    <View key={index} style={styles.timeSlot}>
+                    <TouchableOpacity 
+                      key={index} 
+                      style={styles.timeSlot}
+                      onPress={() => handleBookSession(selectedTutor, time)}
+                    >
                       <Ionicons name="time-outline" size={16} color="#6B7280" />
                       <Text style={styles.timeSlotText}>{time}</Text>
-                    </View>
+                      <View style={styles.bookButton}>
+                        <Text style={styles.bookButtonText}>Book</Text>
+                      </View>
+                    </TouchableOpacity>
                   ))}
                 </View>
 
@@ -387,6 +454,104 @@ export default function TutoringScreen() {
               </ScrollView>
             </SafeAreaView>
           )}
+        </Modal>
+
+        {/* Booking Request Modal */}
+        <Modal
+          visible={showBookingModal}
+          animationType="slide"
+          presentationStyle="pageSheet"
+          onRequestClose={() => setShowBookingModal(false)}
+        >
+          <SafeAreaView style={styles.modalContainer}>
+            {/* Modal Header */}
+            <View style={styles.modalHeader}>
+              <TouchableOpacity 
+                onPress={() => setShowBookingModal(false)} 
+                style={styles.modalCloseButton}
+              >
+                <Ionicons name="close" size={24} color="#1F2937" />
+              </TouchableOpacity>
+              <Text style={styles.modalTitle}>Book Tutoring Session</Text>
+              <TouchableOpacity 
+                onPress={submitBookingRequest}
+                style={styles.submitButton}
+                disabled={!bookingForm.subject.trim()}
+              >
+                <Text style={[
+                  styles.submitButtonText,
+                  !bookingForm.subject.trim() && styles.submitButtonTextDisabled
+                ]}>
+                  Submit
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
+              {/* Booking Details */}
+              <View style={styles.bookingDetailsSection}>
+                <Text style={styles.bookingDetailsTitle}>Session Details</Text>
+                
+                <View style={styles.bookingDetailRow}>
+                  <Text style={styles.bookingDetailLabel}>Tutor:</Text>
+                  <Text style={styles.bookingDetailValue}>{selectedTutor?.name}</Text>
+                </View>
+                
+                <View style={styles.bookingDetailRow}>
+                  <Text style={styles.bookingDetailLabel}>Time Slot:</Text>
+                  <Text style={styles.bookingDetailValue}>{selectedTimeSlot}</Text>
+                </View>
+              </View>
+
+              {/* Subject Selection */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Select Subject *</Text>
+                <View style={styles.subjectSelection}>
+                  {selectedTutor?.subjects.map((subject) => (
+                    <TouchableOpacity
+                      key={subject}
+                      style={[
+                        styles.subjectOption,
+                        bookingForm.subject === subject && styles.subjectOptionSelected,
+                        { backgroundColor: bookingForm.subject === subject ? getSubjectColor(subject) : '#F3F4F6' }
+                      ]}
+                      onPress={() => setBookingForm(prev => ({ ...prev, subject }))}
+                    >
+                      <Text style={[
+                        styles.subjectOptionText,
+                        bookingForm.subject === subject && styles.subjectOptionTextSelected
+                      ]}>
+                        {subject}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {/* Message */}
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Message (Optional)</Text>
+                <TextInput
+                  style={styles.messageInput}
+                  placeholder="Tell the tutor what specific topics you'd like help with..."
+                  placeholderTextColor="#9CA3AF"
+                  multiline
+                  numberOfLines={4}
+                  value={bookingForm.message}
+                  onChangeText={(text) => setBookingForm(prev => ({ ...prev, message: text }))}
+                />
+              </View>
+
+              {/* Important Notes */}
+              <View style={styles.notesSection}>
+                <Text style={styles.notesTitle}>Important Notes:</Text>
+                <Text style={styles.notesText}>• Your request will be sent to the tutor for approval</Text>
+                <Text style={styles.notesText}>• You'll receive a notification once the tutor responds</Text>
+                <Text style={styles.notesText}>• Sessions are typically 1-2 hours long</Text>
+                <Text style={styles.notesText}>• Please be punctual and prepared for your session</Text>
+              </View>
+            </ScrollView>
+          </SafeAreaView>
         </Modal>
       </SafeAreaView>
     </View>
@@ -674,14 +839,27 @@ const styles = StyleSheet.create({
   timeSlot: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: 10,
     paddingVertical: 8,
     borderBottomWidth: 1,
     borderBottomColor: '#F3F4F6',
   },
   timeSlotText: {
+    flex: 1,
     fontSize: 16,
     color: '#4B5563',
+  },
+  bookButton: {
+    backgroundColor: '#DC2626',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  bookButtonText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
   },
   contactItem: {
     flexDirection: 'row',
@@ -712,5 +890,103 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  submitButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  submitButtonText: {
+    color: '#DC2626',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  submitButtonTextDisabled: {
+    color: '#9CA3AF',
+  },
+  bookingDetailsSection: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  bookingDetailsTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 12,
+  },
+  bookingDetailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  bookingDetailLabel: {
+    fontSize: 14,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  bookingDetailValue: {
+    fontSize: 14,
+    color: '#1F2937',
+    fontWeight: '600',
+  },
+  subjectSelection: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+  },
+  subjectOption: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  subjectOptionSelected: {
+    borderColor: 'transparent',
+  },
+  subjectOptionText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#4B5563',
+  },
+  subjectOptionTextSelected: {
+    color: 'white',
+  },
+  messageInput: {
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    color: '#1F2937',
+    textAlignVertical: 'top',
+    minHeight: 100,
+  },
+  notesSection: {
+    backgroundColor: '#FEF3C7',
+    padding: 16,
+    borderRadius: 12,
+    borderLeftWidth: 4,
+    borderLeftColor: '#F59E0B',
+    marginBottom: 20,
+  },
+  notesTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#92400E',
+    marginBottom: 8,
+  },
+  notesText: {
+    fontSize: 12,
+    color: '#92400E',
+    marginBottom: 4,
   },
 });
