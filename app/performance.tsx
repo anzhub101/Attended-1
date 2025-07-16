@@ -278,20 +278,31 @@ export default function PerformanceDashboard() {
     return '#8B5CF6'; // Purple for encouragement
   };
 
-  const getDifficultyStars = (rating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <Ionicons
-          key={i}
-          name={i <= rating ? "star" : "star-outline"}
-          size={14}
-          color={i <= rating ? "#8B5CF6" : "#D1D5DB"}
-        />
-      );
-    }
-    return stars;
+  const getDifficultyStarsSimple = (rating: number) => {
+  const getStarColor = (currentRating: number) => {
+    // Clamp rating between 1 and 5
+    const clampedRating = Math.max(1, Math.min(5, currentRating));
+    
+    if (clampedRating <= 1) return "#22C55E"; // Green
+    if (clampedRating <= 2) return "#65C55E"; // Light Green
+    if (clampedRating <= 3) return "#EAB308"; // Yellow
+    if (clampedRating <= 4) return "#F59E0B"; // Orange
+    return "#EF4444"; // Red
   };
+
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    stars.push(
+      <Ionicons
+        key={i}
+        name={i <= rating ? "star" : "star-outline"}
+        size={14}
+        color={i <= rating ? getStarColor(rating) : "#D1D5DB"}
+      />
+    );
+  }
+  return stars;
+};
 
   const handleCoursePress = (course: CoursePerformance) => {
     setSelectedCourse(course);
