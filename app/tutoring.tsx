@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 
 interface Tutor {
   id: string;
@@ -136,6 +137,7 @@ const mockTutors: Tutor[] = [
 
 export default function TutoringScreen() {
   const router = useRouter();
+  const { filter } = useLocalSearchParams();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
   const [showTutorModal, setShowTutorModal] = useState(false);
@@ -147,6 +149,13 @@ export default function TutoringScreen() {
     subject: '',
     message: '',
   });
+
+  // Set initial search query if filter is provided
+  React.useEffect(() => {
+    if (filter && typeof filter === 'string') {
+      setSearchQuery(filter);
+    }
+  }, [filter]);
 
   const filteredTutors = mockTutors.filter(tutor => {
     const query = searchQuery.toLowerCase();

@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Modal,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -25,6 +26,11 @@ interface CoursePerformance {
   creditHours: number;
   difficultyRating: number;
   difficultyReason: string;
+  motivationalMessage: string;
+  performanceAnalysis: string;
+  tipsAndTricks: string[];
+  strengths: string[];
+  areasForImprovement: string[];
   assignments: {
     completed: number;
     total: number;
@@ -53,7 +59,26 @@ const mockPerformanceData: CoursePerformance[] = [
     attendance: 95,
     creditHours: 3,
     difficultyRating: 4,
-    difficultyReason: 'Based on your strong performance in CSC202 (Data Structures)',
+    difficultyReason: 'Challenging but manageable based on your excellent foundation in CSC202',
+    motivationalMessage: "🌟 You're excelling in this course! Your strong foundation is really showing.",
+    performanceAnalysis: "Your performance in Database Systems is outstanding! With an 88% average and excellent attendance, you're demonstrating strong understanding of complex database concepts. Your participation score of 92% shows great engagement with the material.",
+    tipsAndTricks: [
+      "Practice SQL queries daily to maintain your edge",
+      "Create visual diagrams for complex database relationships",
+      "Join study groups to reinforce your understanding",
+      "Work on real-world database projects to apply concepts"
+    ],
+    strengths: [
+      "Excellent attendance and participation",
+      "Strong grasp of SQL fundamentals",
+      "Good performance on assignments",
+      "Active engagement in class discussions"
+    ],
+    areasForImprovement: [
+      "Focus on advanced query optimization",
+      "Practice more complex join operations",
+      "Review indexing strategies for better performance"
+    ],
     assignments: { completed: 8, total: 10 },
     quizzes: { completed: 5, total: 6 },
     midtermGrade: 85,
@@ -71,7 +96,28 @@ const mockPerformanceData: CoursePerformance[] = [
     attendance: 88,
     creditHours: 3,
     difficultyRating: 5,
-    difficultyReason: 'Higher difficulty due to struggles in MTT101 (Calculus I)',
+    difficultyReason: 'Building on previous math foundation - you\'re making great progress!',
+    motivationalMessage: "💪 You're overcoming challenges and improving steadily! Keep pushing forward.",
+    performanceAnalysis: "You're showing remarkable improvement in Linear Algebra! Despite initial challenges, your B+ grade demonstrates your dedication and growing understanding. Your 82% performance shows you're mastering complex mathematical concepts.",
+    tipsAndTricks: [
+      "Use visual representations for matrix operations",
+      "Practice problems daily for 30 minutes",
+      "Form study groups with classmates",
+      "Visit office hours for personalized help",
+      "Use online resources like Khan Academy for extra practice"
+    ],
+    strengths: [
+      "Consistent improvement throughout the semester",
+      "Good problem-solving approach",
+      "Willingness to seek help when needed",
+      "Strong work ethic and determination"
+    ],
+    areasForImprovement: [
+      "Increase class participation for better understanding",
+      "Attend more regularly to catch all concepts",
+      "Practice more eigenvalue problems",
+      "Review vector space concepts"
+    ],
     assignments: { completed: 6, total: 8 },
     quizzes: { completed: 4, total: 5 },
     midtermGrade: 79,
@@ -89,7 +135,26 @@ const mockPerformanceData: CoursePerformance[] = [
     attendance: 92,
     creditHours: 4,
     difficultyRating: 3,
-    difficultyReason: 'Moderate difficulty based on excellent PHY101 performance',
+    difficultyReason: 'Perfect match for your physics aptitude - you\'re naturally gifted here!',
+    motivationalMessage: "🚀 Outstanding work! You're a natural at physics - keep soaring!",
+    performanceAnalysis: "Exceptional performance in Physics II! Your 91% average and A grade demonstrate mastery of complex physics concepts. Your strong foundation from PHY101 is clearly paying off, and you're excelling in electromagnetic theory and wave mechanics.",
+    tipsAndTricks: [
+      "Continue your excellent problem-solving approach",
+      "Mentor other students to reinforce your understanding",
+      "Explore advanced physics topics for enrichment",
+      "Consider physics research opportunities"
+    ],
+    strengths: [
+      "Excellent conceptual understanding",
+      "Strong mathematical problem-solving skills",
+      "Consistent high performance",
+      "Good laboratory technique"
+    ],
+    areasForImprovement: [
+      "Share knowledge with struggling classmates",
+      "Explore more challenging physics problems",
+      "Consider advanced physics electives"
+    ],
     assignments: { completed: 7, total: 8 },
     quizzes: { completed: 6, total: 6 },
     midtermGrade: 88,
@@ -107,7 +172,28 @@ const mockPerformanceData: CoursePerformance[] = [
     attendance: 90,
     creditHours: 3,
     difficultyRating: 5,
-    difficultyReason: 'High difficulty - new subject area with complex concepts',
+    difficultyReason: 'Challenging new territory - you\'re building important engineering skills!',
+    motivationalMessage: "🔧 You're tackling tough engineering concepts with determination! Every challenge makes you stronger.",
+    performanceAnalysis: "You're doing well in a challenging course! Signals and Systems is known for its complexity, and your B grade shows you're successfully navigating new engineering territory. Your 85% participation demonstrates engagement with difficult material.",
+    tipsAndTricks: [
+      "Use MATLAB/Python for signal visualization",
+      "Practice Fourier transform problems daily",
+      "Draw time and frequency domain representations",
+      "Work through examples step-by-step",
+      "Connect concepts to real-world applications"
+    ],
+    strengths: [
+      "Good attendance and participation",
+      "Persistence with challenging material",
+      "Growing understanding of complex concepts",
+      "Strong mathematical foundation"
+    ],
+    areasForImprovement: [
+      "Practice more transform problems",
+      "Seek additional help during office hours",
+      "Form study groups for problem-solving",
+      "Review fundamental signal concepts regularly"
+    ],
     assignments: { completed: 5, total: 7 },
     quizzes: { completed: 3, total: 4 },
     midtermGrade: 72,
@@ -125,7 +211,26 @@ const mockPerformanceData: CoursePerformance[] = [
     attendance: 98,
     creditHours: 2,
     difficultyRating: 2,
-    difficultyReason: 'Low difficulty - aligns well with your interests and skills',
+    difficultyReason: 'Perfect fit for your creative and analytical mindset!',
+    motivationalMessage: "🌟 You're absolutely crushing this course! Your entrepreneurial spirit is shining through.",
+    performanceAnalysis: "Outstanding performance in Innovation Entrepreneurship! Your 94% average and near-perfect attendance show exceptional engagement. You're demonstrating strong leadership and creative thinking skills that will serve you well in your career.",
+    tipsAndTricks: [
+      "Continue developing your business ideas",
+      "Network with local entrepreneurs",
+      "Apply course concepts to real projects",
+      "Consider entering business plan competitions"
+    ],
+    strengths: [
+      "Exceptional creativity and innovation",
+      "Strong presentation skills",
+      "Excellent teamwork and leadership",
+      "Natural entrepreneurial mindset"
+    ],
+    areasForImprovement: [
+      "Explore more advanced business concepts",
+      "Consider starting a small venture",
+      "Mentor other students in entrepreneurship"
+    ],
     assignments: { completed: 4, total: 4 },
     quizzes: { completed: 3, total: 3 },
     midtermGrade: 92,
@@ -137,6 +242,8 @@ const mockPerformanceData: CoursePerformance[] = [
 export default function PerformanceDashboard() {
   const router = useRouter();
   const [selectedFilter, setSelectedFilter] = useState('All');
+  const [selectedCourse, setSelectedCourse] = useState<CoursePerformance | null>(null);
+  const [showCourseModal, setShowCourseModal] = useState(false);
 
   const totalCreditHours = mockPerformanceData.reduce((sum, course) => sum + course.creditHours, 0);
   const completedCreditHours = 45; // Mock completed credit hours from previous semesters
@@ -158,10 +265,17 @@ export default function PerformanceDashboard() {
   }
 
   const getGradeColor = (percentage: number): string => {
-    if (percentage >= 90) return '#10B981';
-    if (percentage >= 80) return '#F59E0B';
-    if (percentage >= 70) return '#EF4444';
-    return '#6B7280';
+    if (percentage >= 90) return '#10B981'; // Green - Excellent
+    if (percentage >= 80) return '#3B82F6'; // Blue - Good
+    if (percentage >= 70) return '#F59E0B'; // Orange - Satisfactory
+    if (percentage >= 60) return '#EF4444'; // Red - Needs improvement
+    return '#6B7280'; // Gray - Critical
+  };
+
+  const getMotivationalColor = (percentage: number): string => {
+    if (percentage >= 85) return '#10B981'; // Green for excellent
+    if (percentage >= 75) return '#3B82F6'; // Blue for good progress
+    return '#8B5CF6'; // Purple for encouragement
   };
 
   const getDifficultyStars = (rating: number) => {
@@ -172,11 +286,22 @@ export default function PerformanceDashboard() {
           key={i}
           name={i <= rating ? "star" : "star-outline"}
           size={14}
-          color={i <= rating ? "#F59E0B" : "#D1D5DB"}
+          color={i <= rating ? "#8B5CF6" : "#D1D5DB"}
         />
       );
     }
     return stars;
+  };
+
+  const handleCoursePress = (course: CoursePerformance) => {
+    setSelectedCourse(course);
+    setShowCourseModal(true);
+  };
+
+  const handleGetTutoring = (courseCode: string) => {
+    setShowCourseModal(false);
+    // Navigate to tutoring page with course filter
+    router.push(`/tutoring?filter=${courseCode}`);
   };
 
   const ProgressBar = ({ value, max, color, label }: { value: number; max: number; color: string; label: string }) => (
@@ -196,19 +321,6 @@ export default function PerformanceDashboard() {
     </View>
   );
 
-  const CircularProgress = ({ percentage, color, size = 60 }: { percentage: number; color: string; size?: number }) => {
-    const radius = (size - 8) / 2;
-    const circumference = 2 * Math.PI * radius;
-    const strokeDasharray = circumference;
-    const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-    return (
-      <View style={[styles.circularProgress, { width: size, height: size }]}>
-        <Text style={styles.circularProgressText}>{percentage}%</Text>
-      </View>
-    );
-  };
-
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
@@ -217,7 +329,7 @@ export default function PerformanceDashboard() {
           <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="white" />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Performance Dashboard</Text>
+          <Text style={styles.headerTitle}>Your Academic Journey</Text>
           <TouchableOpacity style={styles.settingsButton}>
             <Ionicons name="settings" size={24} color="white" />
           </TouchableOpacity>
@@ -226,24 +338,32 @@ export default function PerformanceDashboard() {
         {/* Content Area */}
         <View style={styles.contentArea}>
           <ScrollView style={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+            {/* Motivational Header */}
+            <View style={styles.motivationalHeader}>
+              <Text style={styles.motivationalTitle}>Keep Growing! 🌱</Text>
+              <Text style={styles.motivationalSubtitle}>
+                Every step forward is progress. You're building amazing skills!
+              </Text>
+            </View>
+
             {/* Overview Cards */}
             <View style={styles.overviewSection}>
               <View style={styles.overviewGrid}>
                 <View style={styles.overviewCard}>
                   <Text style={styles.overviewValue}>{overallGPA.toFixed(2)}</Text>
-                  <Text style={styles.overviewLabel}>Current GPA</Text>
+                  <Text style={styles.overviewLabel}>Your GPA</Text>
                   <Ionicons name="trending-up" size={20} color="#10B981" />
                 </View>
                 
                 <View style={styles.overviewCard}>
                   <Text style={styles.overviewValue}>{totalCompletedCredits}</Text>
-                  <Text style={styles.overviewLabel}>Total Credits</Text>
+                  <Text style={styles.overviewLabel}>Credits Earned</Text>
                   <Ionicons name="school" size={20} color="#3B82F6" />
                 </View>
                 
                 <View style={styles.overviewCard}>
                   <Text style={styles.overviewValue}>{mockPerformanceData.length}</Text>
-                  <Text style={styles.overviewLabel}>Active Courses</Text>
+                  <Text style={styles.overviewLabel}>Current Courses</Text>
                   <Ionicons name="book" size={20} color="#8B5CF6" />
                 </View>
               </View>
@@ -251,10 +371,19 @@ export default function PerformanceDashboard() {
 
             {/* Course Performance Cards */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Course Performance</Text>
+              <Text style={styles.sectionTitle}>Your Course Journey</Text>
               
               {mockPerformanceData.map((course) => (
-                <View key={course.id} style={styles.courseCard}>
+                <TouchableOpacity 
+                  key={course.id} 
+                  style={styles.courseCard}
+                  onPress={() => handleCoursePress(course)}
+                >
+                  {/* Motivational Message */}
+                  <View style={[styles.motivationalBanner, { backgroundColor: getMotivationalColor(course.gradePercentage) }]}>
+                    <Text style={styles.motivationalText}>{course.motivationalMessage}</Text>
+                  </View>
+
                   {/* Course Header */}
                   <View style={styles.courseHeader}>
                     <View style={styles.courseInfo}>
@@ -311,7 +440,7 @@ export default function PerformanceDashboard() {
                   {/* Difficulty Rating */}
                   <View style={styles.difficultySection}>
                     <View style={styles.difficultyHeader}>
-                      <Text style={styles.difficultyLabel}>Difficulty Rating</Text>
+                      <Text style={styles.difficultyLabel}>Challenge Level</Text>
                       <View style={styles.difficultyStars}>
                         {getDifficultyStars(course.difficultyRating)}
                       </View>
@@ -323,14 +452,18 @@ export default function PerformanceDashboard() {
                   <View style={styles.creditHours}>
                     <Ionicons name="time" size={16} color="#6B7280" />
                     <Text style={styles.creditHoursText}>{course.creditHours} Credit Hours</Text>
+                    <View style={styles.tapHint}>
+                      <Text style={styles.tapHintText}>Tap for detailed analysis</Text>
+                      <Ionicons name="chevron-forward" size={16} color="#9CA3AF" />
+                    </View>
                   </View>
-                </View>
+                </TouchableOpacity>
               ))}
             </View>
 
             {/* Academic Summary */}
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Academic Summary</Text>
+              <Text style={styles.sectionTitle}>Your Progress Summary</Text>
               <View style={styles.summaryCard}>
                 <View style={styles.summaryRow}>
                   <Text style={styles.summaryLabel}>Completed Credit Hours:</Text>
@@ -355,6 +488,102 @@ export default function PerformanceDashboard() {
             </View>
           </ScrollView>
         </View>
+
+        {/* Course Detail Modal */}
+        <Modal
+          visible={showCourseModal}
+          animationType="slide"
+          presentationStyle="pageSheet"
+          onRequestClose={() => setShowCourseModal(false)}
+        >
+          {selectedCourse && (
+            <SafeAreaView style={styles.modalContainer}>
+              {/* Modal Header */}
+              <View style={styles.modalHeader}>
+                <TouchableOpacity 
+                  onPress={() => setShowCourseModal(false)} 
+                  style={styles.modalCloseButton}
+                >
+                  <Ionicons name="close" size={24} color="#1F2937" />
+                </TouchableOpacity>
+                <Text style={styles.modalTitle}>Course Analysis</Text>
+                <View style={styles.modalPlaceholder} />
+              </View>
+
+              <ScrollView style={styles.modalContent} showsVerticalScrollIndicator={false}>
+                {/* Course Header */}
+                <View style={styles.modalCourseHeader}>
+                  <Text style={styles.modalCourseCode}>{selectedCourse.code}</Text>
+                  <Text style={styles.modalCourseName}>{selectedCourse.name}</Text>
+                  <Text style={styles.modalCourseInstructor}>{selectedCourse.instructor}</Text>
+                  
+                  <View style={[styles.modalMotivationalBanner, { backgroundColor: getMotivationalColor(selectedCourse.gradePercentage) }]}>
+                    <Text style={styles.modalMotivationalText}>{selectedCourse.motivationalMessage}</Text>
+                  </View>
+                </View>
+
+                {/* Performance Analysis */}
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalSectionTitle}>📊 Performance Analysis</Text>
+                  <Text style={styles.modalAnalysisText}>{selectedCourse.performanceAnalysis}</Text>
+                </View>
+
+                {/* Strengths */}
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalSectionTitle}>💪 Your Strengths</Text>
+                  {selectedCourse.strengths.map((strength, index) => (
+                    <View key={index} style={styles.modalListItem}>
+                      <Ionicons name="checkmark-circle" size={16} color="#10B981" />
+                      <Text style={styles.modalListText}>{strength}</Text>
+                    </View>
+                  ))}
+                </View>
+
+                {/* Areas for Improvement */}
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalSectionTitle}>🎯 Growth Opportunities</Text>
+                  {selectedCourse.areasForImprovement.map((area, index) => (
+                    <View key={index} style={styles.modalListItem}>
+                      <Ionicons name="arrow-up-circle" size={16} color="#3B82F6" />
+                      <Text style={styles.modalListText}>{area}</Text>
+                    </View>
+                  ))}
+                </View>
+
+                {/* Tips and Tricks */}
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalSectionTitle}>💡 Tips & Strategies</Text>
+                  {selectedCourse.tipsAndTricks.map((tip, index) => (
+                    <View key={index} style={styles.modalListItem}>
+                      <Ionicons name="bulb" size={16} color="#F59E0B" />
+                      <Text style={styles.modalListText}>{tip}</Text>
+                    </View>
+                  ))}
+                </View>
+
+                {/* Difficulty Explanation */}
+                <View style={styles.modalSection}>
+                  <Text style={styles.modalSectionTitle}>⭐ Challenge Level Explanation</Text>
+                  <View style={styles.modalDifficultyContainer}>
+                    <View style={styles.modalDifficultyStars}>
+                      {getDifficultyStars(selectedCourse.difficultyRating)}
+                    </View>
+                    <Text style={styles.modalDifficultyText}>{selectedCourse.difficultyReason}</Text>
+                  </View>
+                </View>
+
+                {/* Get Help Button */}
+                <TouchableOpacity
+                  style={styles.modalTutoringButton}
+                  onPress={() => handleGetTutoring(selectedCourse.code)}
+                >
+                  <Ionicons name="people" size={20} color="white" />
+                  <Text style={styles.modalTutoringButtonText}>Get Academic Tutoring</Text>
+                </TouchableOpacity>
+              </ScrollView>
+            </SafeAreaView>
+          )}
+        </Modal>
       </SafeAreaView>
     </View>
   );
@@ -397,6 +626,30 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingTop: 20,
+  },
+  motivationalHeader: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  motivationalTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  motivationalSubtitle: {
+    fontSize: 16,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 22,
   },
   overviewSection: {
     marginBottom: 25,
@@ -449,6 +702,20 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+  },
+  motivationalBanner: {
+    marginTop: -20,
+    marginHorizontal: -20,
+    padding: 12,
+    marginBottom: 16,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+  motivationalText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
   courseHeader: {
     flexDirection: 'row',
@@ -555,11 +822,12 @@ const styles = StyleSheet.create({
   difficultyReason: {
     fontSize: 12,
     color: '#6B7280',
-    fontStyle: 'italic',
+    lineHeight: 16,
   },
   creditHours: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     gap: 6,
   },
   creditHoursText: {
@@ -567,16 +835,15 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     fontWeight: '500',
   },
-  circularProgress: {
-    justifyContent: 'center',
+  tapHint: {
+    flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 50,
-    backgroundColor: '#F3F4F6',
+    gap: 4,
   },
-  circularProgressText: {
+  tapHintText: {
     fontSize: 12,
-    fontWeight: 'bold',
-    color: '#1F2937',
+    color: '#9CA3AF',
+    fontStyle: 'italic',
   },
   summaryCard: {
     backgroundColor: 'white',
@@ -607,5 +874,143 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: '#E5E7EB',
     marginVertical: 8,
+  },
+  // Modal Styles
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#F9FAFB',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalCloseButton: {
+    padding: 5,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  modalPlaceholder: {
+    width: 34,
+  },
+  modalContent: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+  },
+  modalCourseHeader: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  modalCourseCode: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  modalCourseName: {
+    fontSize: 16,
+    color: '#4B5563',
+    marginBottom: 4,
+  },
+  modalCourseInstructor: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginBottom: 16,
+  },
+  modalMotivationalBanner: {
+    padding: 12,
+    borderRadius: 12,
+    width: '100%',
+  },
+  modalMotivationalText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  modalSection: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  modalSectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 12,
+  },
+  modalAnalysisText: {
+    fontSize: 16,
+    color: '#4B5563',
+    lineHeight: 24,
+  },
+  modalListItem: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+    gap: 10,
+  },
+  modalListText: {
+    fontSize: 14,
+    color: '#4B5563',
+    lineHeight: 20,
+    flex: 1,
+  },
+  modalDifficultyContainer: {
+    alignItems: 'center',
+  },
+  modalDifficultyStars: {
+    flexDirection: 'row',
+    gap: 4,
+    marginBottom: 12,
+  },
+  modalDifficultyText: {
+    fontSize: 16,
+    color: '#4B5563',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  modalTutoringButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#DC2626',
+    paddingVertical: 16,
+    borderRadius: 12,
+    gap: 8,
+    marginBottom: 20,
+    shadowColor: '#DC2626',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  modalTutoringButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
