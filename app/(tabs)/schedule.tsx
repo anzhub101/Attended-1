@@ -4,6 +4,8 @@ import { View, Text, Modal, StyleSheet, TouchableOpacity, TouchableWithoutFeedba
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { format } from 'date-fns';
+import { useMainEvents, useSupabaseInsert, useSupabaseDelete } from '../../hooks/useSupabaseData';
+import { useAuth } from '../../contexts/AuthContext';
 import {
   CalendarBody,
   CalendarContainer,
@@ -144,7 +146,12 @@ export const initialEvents: EventData[] = [
 ];
 
 export default function ScheduleScreen() {
-  const [events, setEvents] = useState<EventData[]>(initialEvents);
+  const { user } = useAuth();
+  const { data: dbEvents, loading, refetch } = useMainEvents();
+  const { insert: insertEvent } = useSupabaseInsert('main_events');
+  const { deleteItem: deleteEvent } = useSupabaseDelete('main_events');
+  
+  const [localEvents, setLocalEvents] = useState<EventData[]>(initialEvents);
   const [tempCalendarEvents, setTempCalendarEvents] = useState<EventData[]>([]);
   const [numberOfDays, setNumberOfDays] = useState<number>(5);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -156,8 +163,20 @@ export default function ScheduleScreen() {
   const [tempDate, setTempDate] = useState<Date>(new Date());
   const calendarRef = useRef<CalendarKitHandle>(null);
 
-  // Combine regular events with temporary calendar events
-  const allEvents = [...events, ...tempCalendarEvents];
+  // Convert database events to EventData format
+  const convertedDbEvents: EventData[] = dbEvents.map(event => ({
+    id: event.id,
+    title: event.title,
+    subtitle: event.subtitle || '',
+    description: event.description || '',
+    location: event.location || '',
+    start: { dateTime: event.start_time },
+    end: { dateTime: event.end_time },
+    color: event.color,
+  }));
+
+  // Combine all events
+  const allEvents = [...convertedDbEvents, ...localEvents, ...tempCalendarEvents];
 
   // Function to add temporary calendar event
   const addTempCalendarEvent = (eventData: any) => {
@@ -182,8 +201,36 @@ export default function ScheduleScreen() {
       delete (global as any).addTempCalendarEvent;
     };
   }, []);
-  const handleEventAdded = (newEvent: EventData) => {
-    setEvents(currentEvents => [...currentEvents, newEvent]);
+
+  const handleEventAdded = async (newEvent: EventData) => {
+    if (!user?.id) {
+      // Fallback to local state if no user
+      setLocalEvents(currentEvents => [...currentEvents, newEvent]);
+      setShowEventForm(false);
+      return;
+    }
+
+    try {
+      await insertEvent({
+        user_id: user.id,
+        title: newEvent.title,
+        subtitle: newEvent.subtitle,
+        description: newEvent.description,
+        location: newEvent.location,
+        start_time: newEvent.start.dateTime,
+        end_time: newEvent.end.dateTime,
+        color: newEvent.color,
+        event_type: 'personal',
+        status: 'active'
+      });
+      
+      refetch(); // Refresh the data
+    } catch (error) {
+      console.error('Error adding event:', error);
+      // Fallback to local state
+      setLocalEvents(currentEvents => [...currentEvents, newEvent]);
+    }
+    
     setShowEventForm(false);
   };
 
@@ -287,8 +334,22 @@ export default function ScheduleScreen() {
     setSelectedEvent(null);
   };
 
-  const deleteEvent = (eventId: string) => {
-    setEvents(currentEvents => currentEvents.filter(e => e.id !== eventId));
+  const handleDeleteEvent = async (eventId: string) => {
+    // Check if it's a database event
+    const isDbEvent = dbEvents.some(e => e.id === eventId);
+    
+    if (isDbEvent && user?.id) {
+      try {
+        await deleteEvent(eventId);
+        refetch(); // Refresh the data
+      } catch (error) {
+        console.error('Error deleting event:', error);
+      }
+    } else {
+      // Handle local events
+      setLocalEvents(currentEvents => currentEvents.filter(e => e.id !== eventId));
+    }
+    
     setModalVisible(false);
     setSelectedEvent(null);
   };
@@ -370,7 +431,7 @@ export default function ScheduleScreen() {
             minTimeIntervalHeight={35}
             hourWidth={55}
             onPressEvent={handleEventPress}
-            onLongPressEvent={(event) => deleteEvent(event.id)} 
+            onLongPressEvent={(event) => handleDeleteEvent(event.id)} 
             highlightDates={highlightDates}
             initialDate={selectedDate}
             useHaptic
@@ -490,7 +551,7 @@ export default function ScheduleScreen() {
                   )}
                   <TouchableOpacity 
                     style={styles.deleteButton}
-                    onPress={() => deleteEvent(selectedEvent?.id || "")}>
+                    onPress={() => handleDeleteEvent(selectedEvent?.id || "")}>
                     <Ionicons name="trash" size={20} color="white" />
                   </TouchableOpacity>
                 </View>

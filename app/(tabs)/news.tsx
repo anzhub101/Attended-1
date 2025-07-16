@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNews } from '../../hooks/usedSupabaseData';
+import { useNews } from '../../hooks/useSupabaseData';
 import { NewsDetailModal } from '../../components/NewsDetailModal';
 
 interface NewsItem {

@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '@/lib/supabase';
 
 interface User {
   id: string;
@@ -33,31 +34,94 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for existing session
-    const checkExistingSession = async () => {
+    // Get initial session
+    const getInitialSession = async () => {
       try {
-        const savedUser = await AsyncStorage.getItem('mockUser');
-        if (savedUser) {
-          const userData = JSON.parse(savedUser);
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+          // Fallback to mock user for development
+          const savedUser = await AsyncStorage.getItem('mockUser');
+          if (savedUser) {
+            const userData = JSON.parse(savedUser);
+            setUser(userData);
+            setSession({ user: userData });
+          }
+        } else if (session?.user) {
+          const userData = {
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
+            studentId: session.user.user_metadata?.student_id || 'N/A',
+          };
           setUser(userData);
-          setSession({ user: userData });
+          setSession(session);
+        } else {
+          // Fallback to mock user for development
+          const savedUser = await AsyncStorage.getItem('mockUser');
+          if (savedUser) {
+            const userData = JSON.parse(savedUser);
+            setUser(userData);
+            setSession({ user: userData });
+          }
         }
       } catch (error) {
-        console.error('Error loading saved user:', error);
+        console.error('Error in getInitialSession:', error);
+        // Fallback to mock user
+        try {
+          const savedUser = await AsyncStorage.getItem('mockUser');
+          if (savedUser) {
+            const userData = JSON.parse(savedUser);
+            setUser(userData);
+            setSession({ user: userData });
+          }
+        } catch (fallbackError) {
+          console.error('Fallback error:', fallbackError);
+        }
       }
       setIsLoading(false);
     };
 
-    checkExistingSession();
+    getInitialSession();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (session?.user) {
+          const userData = {
+            id: session.user.id,
+            email: session.user.email || '',
+            name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'User',
+            studentId: session.user.user_metadata?.student_id || 'N/A',
+          };
+          setUser(userData);
+          setSession(session);
+        } else {
+          setUser(null);
+          setSession(null);
+        }
+      }
+    );
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Try Supabase auth first
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       
-      // Mock authentication - accept any email/password for demo
+      if (data.user && !error) {
+        return true;
+      }
+      
+      // Fallback to mock authentication for development
       if (email && password) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const userData = { ...mockUser, email };
         setUser(userData);
         setSession({ user: userData });
@@ -78,21 +142,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     userData: { name: string; studentId: string; department?: string; faculty?: string; phone?: string }
   ): Promise<boolean> => {
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock sign up - create user with provided data
-      const newUser: User = {
-        id: 'mock-user-' + Date.now(),
+      // Try Supabase auth first
+      const { data, error } = await supabase.auth.signUp({
         email,
-        name: userData.name,
-        studentId: userData.studentId,
-      };
+        password,
+        options: {
+          data: {
+            name: userData.name,
+            student_id: userData.studentId,
+            department: userData.department,
+            faculty: userData.faculty,
+            phone: userData.phone,
+          }
+        }
+      });
       
-      setUser(newUser);
-      setSession({ user: newUser });
-      await AsyncStorage.setItem('mockUser', JSON.stringify(newUser));
-      return true;
+      if (data.user && !error) {
+        return true;
+      }
+      
+      // Fallback to mock sign up for development
+      if (email && password) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        const newUser: User = {
+          id: 'mock-user-' + Date.now(),
+          email,
+          name: userData.name,
+          studentId: userData.studentId,
+        };
+        
+        setUser(newUser);
+        setSession({ user: newUser });
+        await AsyncStorage.setItem('mockUser', JSON.stringify(newUser));
+        return true;
+      }
+      
+      return false;
     } catch (error) {
       console.error('Sign up error:', error);
       return false;
@@ -101,6 +186,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     try {
+      // Try Supabase logout first
+      await supabase.auth.signOut();
+      
+      // Clear local state
       setUser(null);
       setSession(null);
       await AsyncStorage.removeItem('mockUser');
