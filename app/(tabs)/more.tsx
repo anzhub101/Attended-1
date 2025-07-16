@@ -103,6 +103,8 @@ export default function MoreScreen() {
     // Navigate to specific features
     if (item.title === 'Academic Tutoring') {
       router.push('/tutoring');
+    } else if (item.title === 'Performance Dashboard') {
+      router.push('/performance');
     } else {
       console.log(`Navigate to ${item.title}`);
     }
