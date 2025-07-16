@@ -83,7 +83,7 @@ const mockPerformanceData: CoursePerformance[] = [
     quizzes: { completed: 5, total: 6 },
     midtermGrade: 85,
     finalExam: { scheduled: true, date: '2025-02-15' },
-    color: '#DB4437',
+    color: '#0F9D58',
   },
   {
     id: '2',
