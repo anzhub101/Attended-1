@@ -11,6 +11,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
+import { usePerformanceData } from '../hooks/useSupabaseData';
 
 const { width } = Dimensions.get('window');
 
@@ -241,15 +242,51 @@ const mockPerformanceData: CoursePerformance[] = [
 
 export default function PerformanceDashboard() {
   const router = useRouter();
+  const { data: performanceData, loading, error } = usePerformanceData();
   const [selectedFilter, setSelectedFilter] = useState('All');
   const [selectedCourse, setSelectedCourse] = useState<CoursePerformance | null>(null);
   const [showCourseModal, setShowCourseModal] = useState(false);
 
-  const totalCreditHours = mockPerformanceData.reduce((sum, course) => sum + course.creditHours, 0);
+  // Use real data if available, fallback to mock data
+  const courseData = performanceData.length > 0 ? performanceData.map(course => ({
+    id: course.id,
+    code: course.course_code,
+    name: course.course_name,
+    instructor: course.instructor,
+    currentGrade: course.current_grade,
+    gradePercentage: course.grade_percentage,
+    participation: course.participation,
+    attendance: course.attendance,
+    creditHours: course.credit_hours,
+    difficultyRating: course.difficulty_rating,
+    difficultyReason: course.difficulty_reason || '',
+    motivationalMessage: course.motivational_message || '',
+    performanceAnalysis: course.performance_analysis || '',
+    tipsAndTricks: course.tips_and_tricks,
+    strengths: course.strengths,
+    areasForImprovement: course.areas_for_improvement,
+    assignments: {
+      completed: course.assignments_completed,
+      total: course.assignments_total,
+    },
+    quizzes: {
+      completed: course.quizzes_completed,
+      total: course.quizzes_total,
+    },
+    midtermGrade: course.midterm_grade,
+    finalExam: {
+      scheduled: course.final_exam_scheduled,
+      date: course.final_exam_date,
+    },
+    color: getGradeColor(course.grade_percentage),
+  })) : mockPerformanceData;
+
+  const totalCreditHours = courseData.reduce((sum, course) => sum + course.creditHours, 0);
   const completedCreditHours = 45; // Mock completed credit hours from previous semesters
   const totalCompletedCredits = completedCreditHours + totalCreditHours;
 
   const overallGPA = mockPerformanceData.reduce((sum, course) => {
+  const overallGPA = courseData.reduce((sum, course) => {
     const gradePoints = getGradePoints(course.currentGrade);
     return sum + (gradePoints * course.creditHours);
   }, 0) / totalCreditHours;
@@ -384,7 +421,17 @@ export default function PerformanceDashboard() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Your Course Journey</Text>
               
-              {mockPerformanceData.map((course) => (
+                ))
+              )}
+                <View style={styles.loadingContainer}>
+                  <Text style={styles.loadingText}>Loading your performance data...</Text>
+                </View>
+              ) : error ? (
+                <View style={styles.errorContainer}>
+                  <Text style={styles.errorText}>Error loading performance data</Text>
+                </View>
+              ) : (
+                courseData.map((course) => (
                 <TouchableOpacity 
                   key={course.id} 
                   style={styles.courseCard}
@@ -940,6 +987,19 @@ const styles = StyleSheet.create({
   modalCourseInstructor: {
     fontSize: 14,
     color: '#6B7280',
+    textAlign: 'center',
+    padding: 20,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  errorText: {
+    fontSize: 14,
+    color: '#EF4444',
+    textAlign: 'center',
     marginBottom: 16,
   },
   modalMotivationalBanner: {

@@ -12,6 +12,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useTutors, useTutorBookings } from '../hooks/useSupabaseData';
 
 interface Tutor {
   id: string;
@@ -137,13 +138,13 @@ const mockTutors: Tutor[] = [
 export default function TutoringScreen() {
   const router = useRouter();
   const { filter } = useLocalSearchParams();
+  const { data: tutors, loading, error, refetch } = useTutors();
+  const { submitBookingRequest, loading: bookingLoading } = useTutorBookings();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTutor, setSelectedTutor] = useState<Tutor | null>(null);
   const [showTutorModal, setShowTutorModal] = useState(false);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState<string>('');
-  const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
-  const [tutoringSessions, setTutoringSessions] = useState<TutoringSession[]>([]);
   const [bookingForm, setBookingForm] = useState({
     subject: '',
     message: '',
@@ -156,7 +157,7 @@ export default function TutoringScreen() {
     }
   }, [filter]);
 
-  const filteredTutors = mockTutors.filter(tutor => {
+  const filteredTutors = tutors.filter(tutor => {
     const query = searchQuery.toLowerCase();
     return (
       tutor.name.toLowerCase().includes(query) ||
@@ -194,28 +195,23 @@ export default function TutoringScreen() {
     setShowBookingModal(true);
   };
 
-  const submitBookingRequest = () => {
+  const handleSubmitBookingRequest = async () => {
     if (!selectedTutor || !bookingForm.subject.trim()) {
       return;
     }
 
-    const newRequest: BookingRequest = {
-      id: Date.now().toString(),
+    const success = await submitBookingRequest({
       tutorId: selectedTutor.id,
-      studentId: 'current-user-id', // In real app, get from auth context
-      studentName: 'Current User', // In real app, get from auth context
       subject: bookingForm.subject.trim(),
       timeSlot: selectedTimeSlot,
       message: bookingForm.message.trim(),
-      status: 'pending',
-      createdAt: new Date().toISOString(),
-    };
+    });
 
-    setBookingRequests(prev => [...prev, newRequest]);
-    setShowBookingModal(false);
-    
-    // Show success message
-    console.log('Booking request submitted successfully!');
+    if (success) {
+      setShowBookingModal(false);
+      setBookingForm({ subject: '', message: '' });
+      console.log('Booking request submitted successfully!');
+    }
   };
   const renderStars = (rating: number) => {
     const stars = [];
@@ -461,15 +457,15 @@ export default function TutoringScreen() {
               </TouchableOpacity>
               <Text style={styles.modalTitle}>Book Tutoring Session</Text>
               <TouchableOpacity 
-                onPress={submitBookingRequest}
+                onPress={handleSubmitBookingRequest}
                 style={styles.submitButton}
-                disabled={!bookingForm.subject.trim()}
+                disabled={!bookingForm.subject.trim() || bookingLoading}
               >
                 <Text style={[
                   styles.submitButtonText,
-                  !bookingForm.subject.trim() && styles.submitButtonTextDisabled
+                  (!bookingForm.subject.trim() || bookingLoading) && styles.submitButtonTextDisabled
                 ]}>
-                  Submit
+                  {bookingLoading ? 'Submitting...' : 'Submit'}
                 </Text>
               </TouchableOpacity>
             </View>
