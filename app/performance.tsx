@@ -53,7 +53,7 @@ const mockPerformanceData: CoursePerformance[] = [
     code: 'CSC303',
     name: 'Database Systems',
     instructor: 'Dr. Ahmed Hassan',
-    currentGrade: 'A-',
+    currentGrade: 'A',
     gradePercentage: 88,
     participation: 92,
     attendance: 95,
