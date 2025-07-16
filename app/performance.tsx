@@ -278,7 +278,7 @@ export default function PerformanceDashboard() {
     return '#8B5CF6'; // Purple for encouragement
   };
 
-  const getDifficultyStarsSimple = (rating: number) => {
+ const getDifficultyStarsSimple = (rating: number) => {
   const getStarColor = (currentRating: number) => {
     // Clamp rating between 1 and 5
     const clampedRating = Math.max(1, Math.min(5, currentRating));
