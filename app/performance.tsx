@@ -450,7 +450,7 @@ export default function PerformanceDashboard() {
                     <View style={styles.difficultyHeader}>
                       <Text style={styles.difficultyLabel}>Challenge Level</Text>
                       <View style={styles.difficultyStars}>
-                        {getDifficultyStars(course.difficultyRating)}
+                        {getDifficultyStarsSimple(course.difficultyRating)}
                       </View>
                     </View>
                     <Text style={styles.difficultyReason}>{course.difficultyReason}</Text>
@@ -574,7 +574,7 @@ export default function PerformanceDashboard() {
                   <Text style={styles.modalSectionTitle}>⭐ Challenge Level Explanation</Text>
                   <View style={styles.modalDifficultyContainer}>
                     <View style={styles.modalDifficultyStars}>
-                      {getDifficultyStars(selectedCourse.difficultyRating)}
+                      {getDifficultyStarsSimple(selectedCourse.difficultyRating)}
                     </View>
                     <Text style={styles.modalDifficultyText}>{selectedCourse.difficultyReason}</Text>
                   </View>
