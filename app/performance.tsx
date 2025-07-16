@@ -235,7 +235,7 @@ const mockPerformanceData: CoursePerformance[] = [
     quizzes: { completed: 3, total: 3 },
     midtermGrade: 92,
     finalExam: { scheduled: false },
-    color: '#9C27B0',
+    color: '#9C27B0', #0F9D58
   },
 ];
 
