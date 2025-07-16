@@ -379,10 +379,7 @@ export default function PerformanceDashboard() {
                   style={styles.courseCard}
                   onPress={() => handleCoursePress(course)}
                 >
-                  {/* Motivational Message */}
-                  <View style={[styles.motivationalBanner, { backgroundColor: getMotivationalColor(course.gradePercentage) }]}>
-                    <Text style={styles.motivationalText}>{course.motivationalMessage}</Text>
-                  </View>
+
 
                   {/* Course Header */}
                   <View style={styles.courseHeader}>
