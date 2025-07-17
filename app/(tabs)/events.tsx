@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput,
 import { Modal } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useCampusEvents, useEventRegistrations } from '../../hooks/useSupabaseData';
+import { useNews } from '../../hooks/usedSupabaseData';
 import { useRouter } from 'expo-router';
+import { useSupabaseInsert, useCampusEvents, useUserEventRegistrations, useEvents } from '../../hooks/usedSupabaseData';
 import QRTicket from '../../components/QRTicket';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -25,13 +26,15 @@ export default function EventsScreen() {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-  const { data: campusEvents, loading, error, refetch } = useCampusEvents();
+  const { data: campusEvents, loading, error } = useCampusEvents();
   const { 
-    registrations, 
+    registrations: registeredEvents, 
     registerForEvent, 
     unregisterFromEvent,
     loading: registrationsLoading 
-  } = useEventRegistrations();
+  } = useUserEventRegistrations();
+  const { refetch: refetchEvents } = useEvents();
+  const { insert: insertEvent } = useSupabaseInsert('events');
   const [showQRTicket, setShowQRTicket] = useState(false);
   const [selectedEventForTicket, setSelectedEventForTicket] = useState<any>(null);
   const [showRegisteredEvents, setShowRegisteredEvents] = useState(false);
@@ -46,10 +49,19 @@ export default function EventsScreen() {
   ];
   
 
-  // Use campus events directly with proper image fallback
+  // Use campus events directly
   const events = campusEvents.map(item => ({
-    ...item,
+    id: item.id,
+    title: item.title,
+    description: item.description,
     image: item.image_url || 'https://images.pexels.com/photos/1181298/pexels-photo-1181298.jpeg?auto=compress&cs=tinysrgb&w=400&h=250&dpr=2',
+    category: item.category,
+    author: item.author,
+    location: item.location,
+    event_date: item.event_date,
+    event_time: item.event_time,
+    max_attendees: item.max_attendees,
+    current_attendees: item.current_attendees,
   }));
 
   const filteredEvents = events.filter(event => {
@@ -59,6 +71,14 @@ export default function EventsScreen() {
     return matchesSearch && matchesCategory;
   });
 
+  const toggleRegistration = async (eventId: string) => {
+    if (registeredEvents.includes(eventId)) {
+      await unregisterFromEvent(eventId);
+    } else {
+      await registerForEvent(eventId);
+    }
+  };
+
   const addToCalendar = async (event: any) => {
     // Add to temporary calendar state for immediate display
     if ((global as any).addTempCalendarEvent) {
@@ -66,8 +86,7 @@ export default function EventsScreen() {
     }
     
     // Mark as registered
-    const success = await registerForEvent(event.id);
-    if (success) refetch(); // Refresh events to update attendee count
+    await registerForEvent(event.id);
   };
 
   const formatEventDate = (dateString: string) => {
@@ -85,7 +104,7 @@ export default function EventsScreen() {
   };
 
   const getRegisteredEventsList = (): RegisteredEvent[] => {
-    return events.filter(event => registrations.includes(event.id));
+    return events.filter(event => registeredEvents.includes(event.id));
   };
 
   const showRegisteredEventsList = () => {
@@ -178,7 +197,7 @@ export default function EventsScreen() {
                     <View style={styles.categoryBadge}>
                       <Text style={styles.categoryBadgeText}>{event.category}</Text>
                     </View>
-                    {registrations.includes(event.id) && (
+                    {registeredEvents.includes(event.id) && (
                       <View style={styles.registeredBadge}>
                         <Ionicons name="checkmark-circle" size={16} color="#10B981" />
                         <Text style={styles.registeredText}>Registered</Text>
@@ -212,28 +231,28 @@ export default function EventsScreen() {
                   <TouchableOpacity
                     style={[
                       styles.registerButton,
-                      registrations.includes(event.id) && styles.registeredButton
+                      registeredEvents.includes(event.id) && styles.registeredButton
                     ]}
                     onPress={() => {
-                      if (registrations.includes(event.id)) {
-                        unregisterFromEvent(event.id);
+                      if (registeredEvents.includes(event.id)) {
+                        toggleRegistration(event.id);
                       } else {
                         addToCalendar(event);
                       }
                     }}
                   >
                     <Ionicons 
-                      name={registrations.includes(event.id) ? "checkmark-circle" : "calendar"} 
+                      name={registeredEvents.includes(event.id) ? "checkmark-circle" : "calendar"} 
                       size={20} 
                       color="white" 
                     />
                     <Text style={styles.registerButtonText}>
-                      {registrations.includes(event.id) ? 'Registered' : 'Add to calendar'}
+                      {registeredEvents.includes(event.id) ? 'Registered' : 'Add to calendar'}
                     </Text>
                   </TouchableOpacity>
                 </View>
               {/* Show Ticket Button for registered events */}
-                  {registrations.includes(event.id) && (
+                  {registeredEvents.includes(event.id) && (
                 <TouchableOpacity
                   style={styles.ticketButtonSmall}
                   onPress={() => showTicket(event)}

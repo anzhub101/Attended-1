@@ -2,14 +2,14 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useMainEvents, useNews, useAssignments, useQuickActions } from '../../hooks/useSupabaseData';
+import { useEvents, useNews, useAssignments, useQuickActions } from '../../hooks/usedSupabaseData';
 import { useAuth } from '../../contexts/AuthContext';
 
 export default function DashboardScreen() {
   const { user } = useAuth();
   const { data: quickActions, loading: quickActionsLoading } = useQuickActions();
   const { data: assignments, loading: assignmentsLoading } = useAssignments();
-  const { data: events, loading: eventsLoading } = useMainEvents();
+  const { data: events, loading: eventsLoading } = useEvents();
   const { data: news, loading: newsLoading } = useNews();
 
   // Filter today's events
