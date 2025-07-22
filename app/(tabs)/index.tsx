@@ -4,13 +4,19 @@ import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEvents, useNews, useAssignments, useQuickActions } from '../../hooks/usedSupabaseData';
 import { useAuth } from '../../contexts/AuthContext';
+import { useRouter } from 'expo-router';
 
 export default function DashboardScreen() {
   const { user } = useAuth();
+  const router = useRouter();
   const { data: quickActions, loading: quickActionsLoading } = useQuickActions();
   const { data: assignments, loading: assignmentsLoading } = useAssignments();
   const { data: events, loading: eventsLoading } = useEvents();
   const { data: news, loading: newsLoading } = useNews();
+
+  const handleQuickActionPress = (route: string) => {
+    router.push(route);
+  };
 
   // Filter today's events
   const today = new Date();
