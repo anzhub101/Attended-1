@@ -262,7 +262,7 @@ export default function AuthenticatorScreen() {
                 </View>
                 <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
               </TouchableOpacity>
-
+            </View>
 
             {/* Security Tips */}
             <View style={styles.section}>
