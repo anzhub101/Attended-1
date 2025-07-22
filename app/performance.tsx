@@ -380,6 +380,14 @@ export default function PerformanceDashboard() {
               </View>
             </View>
 
+            {/* Get Academic Tutoring Button */}
+            <TouchableOpacity
+              style={styles.tutoringButton}
+              onPress={() => handleGetTutoring(course.code)}
+            >
+              <Ionicons name="people" size={16} color="#DC2626" />
+              <Text style={styles.tutoringButtonText}>Get Academic Tutoring</Text>
+            </TouchableOpacity>
             {/* Course Performance Cards */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Your Course Journey</Text>
@@ -533,18 +541,91 @@ export default function PerformanceDashboard() {
                 {/* Performance Analysis */}
                 <View style={styles.modalSection}>
                   <Text style={styles.modalSectionTitle}>📊 Performance Analysis</Text>
-                  <Text style={styles.modalAnalysisText}>{selectedCourse.performanceAnalysis}</Text>
+                  <View style={styles.chartContainer}>
+                    <View style={styles.chartRow}>
+                      <View style={styles.chartItem}>
+                        <Text style={styles.chartLabel}>Grade</Text>
+                        <View style={styles.progressCircle}>
+                          <View style={[styles.progressFill, { 
+                            width: `${selectedCourse.gradePercentage}%`,
+                            backgroundColor: getGradeColor(selectedCourse.gradePercentage)
+                          }]} />
+                        </View>
+                        <Text style={styles.chartValue}>{selectedCourse.gradePercentage}%</Text>
+                      </View>
+                      <View style={styles.chartItem}>
+                        <Text style={styles.chartLabel}>Attendance</Text>
+                        <View style={styles.progressCircle}>
+                          <View style={[styles.progressFill, { 
+                            width: `${selectedCourse.attendance}%`,
+                            backgroundColor: '#10B981'
+                          }]} />
+                        </View>
+                        <Text style={styles.chartValue}>{selectedCourse.attendance}%</Text>
+                      </View>
+                    </View>
+                    <View style={styles.chartRow}>
+                      <View style={styles.chartItem}>
+                        <Text style={styles.chartLabel}>Participation</Text>
+                        <View style={styles.progressCircle}>
+                          <View style={[styles.progressFill, { 
+                            width: `${selectedCourse.participation}%`,
+                            backgroundColor: '#3B82F6'
+                          }]} />
+                        </View>
+                        <Text style={styles.chartValue}>{selectedCourse.participation}%</Text>
+                      </View>
+                      <View style={styles.chartItem}>
+                        <Text style={styles.chartLabel}>Assignments</Text>
+                        <View style={styles.progressCircle}>
+                          <View style={[styles.progressFill, { 
+                            width: `${(selectedCourse.assignments.completed / selectedCourse.assignments.total) * 100}%`,
+                            backgroundColor: '#8B5CF6'
+                          }]} />
+                        </View>
+                        <Text style={styles.chartValue}>
+                          {selectedCourse.assignments.completed}/{selectedCourse.assignments.total}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
                 </View>
 
                 {/* Strengths */}
                 <View style={styles.modalSection}>
                   <Text style={styles.modalSectionTitle}>💪 Your Strengths</Text>
-                  {selectedCourse.strengths.map((strength, index) => (
-                    <View key={index} style={styles.modalListItem}>
-                      <Ionicons name="checkmark-circle" size={16} color="#10B981" />
-                      <Text style={styles.modalListText}>{strength}</Text>
+                  <View style={styles.strengthsChart}>
+                    <View style={styles.strengthBar}>
+                      <Text style={styles.strengthLabel}>Class Engagement</Text>
+                      <View style={styles.strengthProgress}>
+                        <View style={[styles.strengthFill, { 
+                          width: `${selectedCourse.participation}%`,
+                          backgroundColor: '#10B981'
+                        }]} />
+                      </View>
+                      <Text style={styles.strengthValue}>{selectedCourse.participation}%</Text>
                     </View>
-                  ))}
+                    <View style={styles.strengthBar}>
+                      <Text style={styles.strengthLabel}>Assignment Quality</Text>
+                      <View style={styles.strengthProgress}>
+                        <View style={[styles.strengthFill, { 
+                          width: `${selectedCourse.gradePercentage}%`,
+                          backgroundColor: '#3B82F6'
+                        }]} />
+                      </View>
+                      <Text style={styles.strengthValue}>{selectedCourse.gradePercentage}%</Text>
+                    </View>
+                    <View style={styles.strengthBar}>
+                      <Text style={styles.strengthLabel}>Consistency</Text>
+                      <View style={styles.strengthProgress}>
+                        <View style={[styles.strengthFill, { 
+                          width: `${selectedCourse.attendance}%`,
+                          backgroundColor: '#8B5CF6'
+                        }]} />
+                      </View>
+                      <Text style={styles.strengthValue}>{selectedCourse.attendance}%</Text>
+                    </View>
+                  </View>
                 </View>
 
                 {/* Areas for Improvement */}
@@ -853,6 +934,22 @@ const styles = StyleSheet.create({
     color: '#9CA3AF',
     fontStyle: 'italic',
   },
+  tutoringButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FEE2E2',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginTop: 12,
+    gap: 6,
+  },
+  tutoringButtonText: {
+    color: '#DC2626',
+    fontSize: 14,
+    fontWeight: '600',
+  },
   summaryCard: {
     backgroundColor: 'white',
     borderRadius: 16,
@@ -1020,5 +1117,75 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
+  },
+  chartContainer: {
+    gap: 16,
+  },
+  chartRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 16,
+  },
+  chartItem: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#F9FAFB',
+    padding: 16,
+    borderRadius: 12,
+  },
+  chartLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '500',
+    marginBottom: 8,
+  },
+  progressCircle: {
+    width: 60,
+    height: 8,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  chartValue: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#1F2937',
+  },
+  strengthsChart: {
+    gap: 16,
+  },
+  strengthBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  strengthLabel: {
+    fontSize: 14,
+    color: '#4B5563',
+    fontWeight: '500',
+    width: 120,
+  },
+  strengthProgress: {
+    flex: 1,
+    height: 8,
+    backgroundColor: '#E5E7EB',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  strengthFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  strengthValue: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#1F2937',
+    width: 40,
+    textAlign: 'right',
   },
 });
