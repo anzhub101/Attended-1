@@ -474,17 +474,6 @@ export default function PerformanceDashboard() {
                     <Text style={styles.difficultyReason}>{course.difficultyReason}</Text>
                   </View>
 
-                  {/* Get Academic Tutoring Button - Only show for grades below A */}
-                  {isGradeBelowA(course.currentGrade) && (
-                    <TouchableOpacity
-                      style={styles.tutoringButton}
-                      onPress={() => handleGetTutoring(course.code)}
-                    >
-                      <Ionicons name="people" size={16} color="#DC2626" />
-                      <Text style={styles.tutoringButtonText}>Get Academic Tutoring</Text>
-                    </TouchableOpacity>
-                  )}
-
                   {/* Credit Hours */}
                   <View style={styles.creditHours}>
                     <Ionicons name="time" size={16} color="#6B7280" />
