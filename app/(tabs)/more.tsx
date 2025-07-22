@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Modal, TextInput, KeyboardAvoidingView, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/AuthContext';
@@ -14,9 +14,26 @@ interface MenuItem {
   comingSoon?: boolean;
 }
 
+interface ChatMessage {
+  id: string;
+  text: string;
+  isUser: boolean;
+  timestamp: Date;
+}
+
 export default function MoreScreen() {
   const { logout } = useAuth();
   const router = useRouter();
+  const [isChatVisible, setIsChatVisible] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    {
+      id: '1',
+      text: 'Hi! I\'m your AI assistant. How can I help you today?',
+      isUser: false,
+      timestamp: new Date(),
+    }
+  ]);
+  const [inputText, setInputText] = useState('');
 
   const handleLogout = async () => {
     try {
@@ -65,7 +82,6 @@ export default function MoreScreen() {
       icon: 'map',
       color: '#84CC16',
       comingSoon: true,
-
     },
     {
       id: 6,
@@ -82,7 +98,6 @@ export default function MoreScreen() {
       icon: 'bus',
       color: '#6366F1',
       comingSoon: true,
-
     },
     {
       id: 8,
@@ -96,11 +111,9 @@ export default function MoreScreen() {
 
   const handleMenuPress = (item: MenuItem) => {
     if (item.comingSoon) {
-      // Show coming soon message
       return;
     }
     
-    // Navigate to specific features
     if (item.title === 'Academic Tutoring') {
       router.push('/tutoring');
     } else if (item.title === 'Performance Dashboard') {
@@ -109,6 +122,55 @@ export default function MoreScreen() {
       console.log(`Navigate to ${item.title}`);
     }
   };
+
+  const sendMessage = () => {
+    if (inputText.trim() === '') return;
+
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      text: inputText.trim(),
+      isUser: true,
+      timestamp: new Date(),
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setInputText('');
+
+    // Simulate AI response
+    setTimeout(() => {
+      const aiResponses = [
+        "That's a great question! I'd be happy to help you with that.",
+        "I understand. Let me provide you with some information about that topic.",
+        "Thanks for asking! Here's what I can tell you about that.",
+        "I'm here to assist you. Could you provide a bit more context?",
+        "That's interesting! I can help you explore this further.",
+        "I can definitely help with that. Here are some suggestions...",
+      ];
+
+      const aiMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        text: aiResponses[Math.floor(Math.random() * aiResponses.length)],
+        isUser: false,
+        timestamp: new Date(),
+      };
+
+      setMessages(prev => [...prev, aiMessage]);
+    }, 1000);
+  };
+
+  const renderMessage = ({ item }: { item: ChatMessage }) => (
+    <View style={[
+      styles.messageContainer,
+      item.isUser ? styles.userMessage : styles.aiMessage
+    ]}>
+      <Text style={[
+        styles.messageText,
+        item.isUser ? styles.userMessageText : styles.aiMessageText
+      ]}>
+        {item.text}
+      </Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -183,6 +245,7 @@ export default function MoreScreen() {
                 <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
               </TouchableOpacity>
             </View>
+
             {/* Support Section */}
             <View style={styles.supportSection}>
               <Text style={styles.supportTitle}>Need Help?</Text>
@@ -222,6 +285,82 @@ export default function MoreScreen() {
             </View>
           </ScrollView>
         </View>
+
+        {/* Floating AI Chat Button */}
+        <TouchableOpacity 
+          style={styles.floatingButton}
+          onPress={() => setIsChatVisible(true)}
+        >
+          <Ionicons name="chatbubble" size={28} color="white" />
+        </TouchableOpacity>
+
+        {/* AI Chat Modal */}
+        <Modal
+          visible={isChatVisible}
+          animationType="slide"
+          transparent={false}
+        >
+          <SafeAreaView style={styles.chatContainer}>
+            {/* Chat Header */}
+            <View style={styles.chatHeader}>
+              <View style={styles.chatHeaderInfo}>
+                <View style={styles.aiAvatarContainer}>
+                  <Ionicons name="sparkles" size={20} color="#3B82F6" />
+                </View>
+                <View>
+                  <Text style={styles.chatHeaderTitle}>AI Assistant</Text>
+                  <Text style={styles.chatHeaderSubtitle}>Always here to help</Text>
+                </View>
+              </View>
+              <TouchableOpacity 
+                style={styles.closeButton}
+                onPress={() => setIsChatVisible(false)}
+              >
+                <Ionicons name="close" size={24} color="#6B7280" />
+              </TouchableOpacity>
+            </View>
+
+            {/* Messages */}
+            <FlatList
+              data={messages}
+              keyExtractor={(item) => item.id}
+              renderItem={renderMessage}
+              style={styles.messagesList}
+              contentContainerStyle={styles.messagesContainer}
+            />
+
+            {/* Input Area */}
+            <KeyboardAvoidingView 
+              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+              style={styles.inputContainer}
+            >
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  style={styles.textInput}
+                  placeholder="Type your message..."
+                  value={inputText}
+                  onChangeText={setInputText}
+                  multiline
+                  maxLength={500}
+                />
+                <TouchableOpacity 
+                  style={[
+                    styles.sendButton,
+                    inputText.trim() === '' && styles.sendButtonDisabled
+                  ]}
+                  onPress={sendMessage}
+                  disabled={inputText.trim() === ''}
+                >
+                  <Ionicons 
+                    name="send" 
+                    size={20} 
+                    color={inputText.trim() === '' ? '#9CA3AF' : 'white'} 
+                  />
+                </TouchableOpacity>
+              </View>
+            </KeyboardAvoidingView>
+          </SafeAreaView>
+        </Modal>
       </SafeAreaView>
     </View>
   );
@@ -404,5 +543,131 @@ const styles = StyleSheet.create({
   logoutDescription: {
     fontSize: 14,
     color: '#6B7280',
+  },
+  // Floating Button Styles
+  floatingButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: '#3B82F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  // Chat Modal Styles
+  chatContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  chatHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  chatHeaderInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  aiAvatarContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#EBF4FF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  chatHeaderTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#1F2937',
+  },
+  chatHeaderSubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
+  },
+  closeButton: {
+    padding: 8,
+  },
+  messagesList: {
+    flex: 1,
+  },
+  messagesContainer: {
+    padding: 20,
+    paddingBottom: 100,
+  },
+  messageContainer: {
+    marginBottom: 16,
+    maxWidth: '80%',
+  },
+  userMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#3B82F6',
+    borderRadius: 18,
+    borderBottomRightRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  aiMessage: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#F3F4F6',
+    borderRadius: 18,
+    borderBottomLeftRadius: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  messageText: {
+    fontSize: 16,
+    lineHeight: 22,
+  },
+  userMessageText: {
+    color: 'white',
+  },
+  aiMessageText: {
+    color: '#1F2937',
+  },
+  inputContainer: {
+    backgroundColor: 'white',
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  inputWrapper: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    padding: 20,
+    paddingTop: 16,
+  },
+  textInput: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    marginRight: 12,
+    fontSize: 16,
+    maxHeight: 100,
+  },
+  sendButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#3B82F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  sendButtonDisabled: {
+    backgroundColor: '#F3F4F6',
   },
 });
