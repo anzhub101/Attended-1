@@ -1208,4 +1208,31 @@ const styles = StyleSheet.create({
     width: 40,
     textAlign: 'right',
   },
+  assignmentTutoringContainer: {
+  flexDirection: 'row',
+  justifyContent: 'space-between',
+  alignItems: 'flex-start',
+  marginBottom: 16,
+  gap: 12,
+},
+assignmentProgress: {
+  flex: 1,
+  // Remove marginBottom: 16 from the existing style if present
+},
+tutoringButtonCompact: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  backgroundColor: '#FEE2E2',
+  paddingVertical: 8,
+  paddingHorizontal: 12,
+  borderRadius: 6,
+  gap: 4,
+  minWidth: 80,
+},
+tutoringButtonCompactText: {
+  color: '#DC2626',
+  fontSize: 12,
+  fontWeight: '600',
+},
 });
