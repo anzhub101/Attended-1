@@ -162,6 +162,8 @@ const mockCampusEvents = [
     location: 'Main Auditorium',
     event_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     event_time: '10:00 AM',
+    start_time: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 + 6 * 60 * 60 * 1000).toISOString(), // 10 AM GST = 6 AM UTC
+    end_time: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 + 8 * 60 * 60 * 1000).toISOString(),   // 12 PM GST = 8 AM UTC
     registration_required: true,
     max_attendees: 500,
     current_attendees: 234,
@@ -178,6 +180,8 @@ const mockCampusEvents = [
     location: 'Student Center',
     event_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
     event_time: '9:00 AM',
+    start_time: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000 + 5 * 60 * 60 * 1000).toISOString(), // 9 AM GST = 5 AM UTC
+    end_time: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000 + 7 * 60 * 60 * 1000).toISOString(),   // 11 AM GST = 7 AM UTC
     registration_required: true,
     max_attendees: 1000,
     current_attendees: 567,
@@ -194,6 +198,8 @@ const mockCampusEvents = [
     location: 'Engineering Building',
     event_date: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
     event_time: '2:00 PM',
+    start_time: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000 + 10 * 60 * 60 * 1000).toISOString(), // 2 PM GST = 10 AM UTC
+    end_time: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000 + 12 * 60 * 60 * 1000).toISOString(),   // 4 PM GST = 12 PM UTC
     registration_required: true,
     max_attendees: 100,
     current_attendees: 78,
@@ -201,6 +207,7 @@ const mockCampusEvents = [
     updated_at: new Date().toISOString(),
   },
 ];
+
 
 // Generic hook for mock data
 export function useMockData<T>(data: T[], delay = 500, storageKey?: string) {
