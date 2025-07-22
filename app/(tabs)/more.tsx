@@ -298,9 +298,10 @@ export default function MoreScreen() {
         <Modal
           visible={isChatVisible}
           animationType="slide"
-          transparent={false}
+          transparent={true}
         >
-          <SafeAreaView style={styles.chatContainer}>
+          <View style={styles.chatOverlay}>
+            <SafeAreaView style={styles.chatContainer}>
             {/* Chat Header */}
             <View style={styles.chatHeader}>
               <View style={styles.chatHeaderInfo}>
@@ -314,7 +315,16 @@ export default function MoreScreen() {
               </View>
               <TouchableOpacity 
                 style={styles.closeButton}
-                onPress={() => setIsChatVisible(false)}
+                onPress={() => {
+                  setIsChatVisible(false);
+                  setMessages([{
+                    id: '1',
+                    text: 'Hi! I\'m your AI assistant. How can I help you today?',
+                    isUser: false,
+                    timestamp: new Date(),
+                  }]);
+                  setInputText('');
+                }}
               >
                 <Ionicons name="close" size={24} color="#6B7280" />
               </TouchableOpacity>
@@ -359,7 +369,8 @@ export default function MoreScreen() {
                 </TouchableOpacity>
               </View>
             </KeyboardAvoidingView>
-          </SafeAreaView>
+            </SafeAreaView>
+          </View>
         </Modal>
       </SafeAreaView>
     </View>
@@ -562,9 +573,16 @@ const styles = StyleSheet.create({
     elevation: 8,
   },
   // Chat Modal Styles
+  chatOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingTop: 100, // Space for the header
+  },
   chatContainer: {
     flex: 1,
     backgroundColor: 'white',
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
   },
   chatHeader: {
     flexDirection: 'row',
