@@ -35,17 +35,9 @@ export default function AuthenticatorScreen() {
       setupRequired: true,
     },
     {
-      id: 'qr-code',
-      title: 'QR Code Login',
-      description: 'Scan QR codes to login quickly from other devices',
-      icon: 'qr-code',
-      enabled: true,
-      setupRequired: false,
-    },
-    {
       id: 'totp',
       title: 'Authenticator App (TOTP)',
-      description: 'Use Google Authenticator or similar apps for 2FA codes',
+      description: 'Use Microsoft Authenticator for 2FA codes',
       icon: 'time',
       enabled: false,
       setupRequired: true,
