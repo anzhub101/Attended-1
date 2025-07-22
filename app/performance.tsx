@@ -427,28 +427,42 @@ export default function PerformanceDashboard() {
                     />
                   </View>
 
-                  {/* Assignment Progress */}
-                  <View style={styles.assignmentProgress}>
-                    <View style={styles.assignmentItem}>
-                      <Ionicons name="document-text" size={16} color="#6B7280" />
-                      <Text style={styles.assignmentText}>
-                        Assignments: {course.assignments.completed}/{course.assignments.total}
-                      </Text>
+                  
+                  {/* Assignment Progress and Tutoring Section */}
+                  <View style={styles.assignmentTutoringContainer}>
+                    <View style={styles.assignmentProgress}>
+                      <View style={styles.assignmentItem}>
+                        <Ionicons name="document-text" size={16} color="#6B7280" />
+                        <Text style={styles.assignmentText}>
+                          Assignments: {course.assignments.completed}/{course.assignments.total}
+                        </Text>
+                      </View>
+                      <View style={styles.assignmentItem}>
+                        <Ionicons name="help-circle" size={16} color="#6B7280" />
+                        <Text style={styles.assignmentText}>
+                          Quizzes: {course.quizzes.completed}/{course.quizzes.total}
+                        </Text>
+                      </View>
+                      <View style={styles.assignmentItem}>
+                        <Ionicons name="trophy" size={16} color="#6B7280" />
+                        <Text style={styles.assignmentText}>
+                          Midterm: {course.midtermGrade}%
+                        </Text>
+                      </View>
                     </View>
-                    <View style={styles.assignmentItem}>
-                      <Ionicons name="help-circle" size={16} color="#6B7280" />
-                      <Text style={styles.assignmentText}>
-                        Quizzes: {course.quizzes.completed}/{course.quizzes.total}
-                      </Text>
-                    </View>
-                    <View style={styles.assignmentItem}>
-                      <Ionicons name="trophy" size={16} color="#6B7280" />
-                      <Text style={styles.assignmentText}>
-                        Midterm: {course.midtermGrade}%
-                      </Text>
-                    </View>
+                  
+                    {/* Get Academic Tutoring Button - Only show for grades below A */}
+                    {isGradeBelowA(course.currentGrade) && (
+                      <TouchableOpacity
+                        style={styles.tutoringButtonCompact}
+                        onPress={() => handleGetTutoring(course.code)}
+                      >
+                        <Ionicons name="people" size={14} color="#DC2626" />
+                        <Text style={styles.tutoringButtonCompactText}>Get Help</Text>
+                      </TouchableOpacity>
+                    )}
                   </View>
-
+                  
                   {/* Difficulty Rating */}
                   <View style={styles.difficultySection}>
                     <View style={styles.difficultyHeader}>
