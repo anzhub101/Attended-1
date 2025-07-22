@@ -126,7 +126,11 @@ export default function DashboardScreen() {
               ) : (
                 <View style={styles.quickActionsGrid}>
                   {quickActions.map((action) => (
-                    <TouchableOpacity key={action.id} style={styles.quickActionCard}>
+                    <TouchableOpacity 
+                      key={action.id} 
+                      style={styles.quickActionCard}
+                      onPress={() => handleQuickActionPress(action.route)}
+                    >
                       <View style={[styles.quickActionIcon, { backgroundColor: action.color }]}>
                         <Ionicons name={action.icon as any} size={24} color="white" />
                       </View>
