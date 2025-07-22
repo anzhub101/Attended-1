@@ -267,12 +267,6 @@ export default function AuthenticatorScreen() {
                 <View style={styles.actionIcon}>
                   <Ionicons name="warning" size={24} color="#F59E0B" />
                 </View>
-                <View style={styles.actionInfo}>
-                  <Text style={styles.actionTitle}>Security Alerts</Text>
-                  <Text style={styles.actionDescription}>
-                    Configure notifications for suspicious activity
-                  </Text>
-                </View>
                 <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
               </TouchableOpacity>
             </View>
