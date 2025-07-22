@@ -264,6 +264,12 @@ export default function PerformanceDashboard() {
     return gradeMap[grade] || 0;
   }
 
+  // Helper function to check if grade is below A
+  const isGradeBelowA = (grade: string): boolean => {
+    const gradesAboveA = ['A+', 'A', 'A-'];
+    return !gradesAboveA.includes(grade);
+  };
+
   const getGradeColor = (percentage: number): string => {
     if (percentage >= 90) return '#10B981'; // Green - Excellent
     if (percentage >= 80) return '#3B82F6'; // Blue - Good
@@ -380,14 +386,6 @@ export default function PerformanceDashboard() {
               </View>
             </View>
 
-            {/* Get Academic Tutoring Button */}
-            <TouchableOpacity
-              style={styles.tutoringButton}
-              onPress={() => handleGetTutoring(course.code)}
-            >
-              <Ionicons name="people" size={16} color="#DC2626" />
-              <Text style={styles.tutoringButtonText}>Get Academic Tutoring</Text>
-            </TouchableOpacity>
             {/* Course Performance Cards */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Your Course Journey</Text>
@@ -398,8 +396,6 @@ export default function PerformanceDashboard() {
                   style={styles.courseCard}
                   onPress={() => handleCoursePress(course)}
                 >
-
-
                   {/* Course Header */}
                   <View style={styles.courseHeader}>
                     <View style={styles.courseInfo}>
@@ -463,6 +459,17 @@ export default function PerformanceDashboard() {
                     </View>
                     <Text style={styles.difficultyReason}>{course.difficultyReason}</Text>
                   </View>
+
+                  {/* Get Academic Tutoring Button - Only show for grades below A */}
+                  {isGradeBelowA(course.currentGrade) && (
+                    <TouchableOpacity
+                      style={styles.tutoringButton}
+                      onPress={() => handleGetTutoring(course.code)}
+                    >
+                      <Ionicons name="people" size={16} color="#DC2626" />
+                      <Text style={styles.tutoringButtonText}>Get Academic Tutoring</Text>
+                    </TouchableOpacity>
+                  )}
 
                   {/* Credit Hours */}
                   <View style={styles.creditHours}>
@@ -661,7 +668,7 @@ export default function PerformanceDashboard() {
                   </View>
                 </View>
 
-                {/* Get Help Button */}
+                {/* Get Help Button - Show for all courses in modal */}
                 <TouchableOpacity
                   style={styles.modalTutoringButton}
                   onPress={() => handleGetTutoring(selectedCourse.code)}
@@ -677,7 +684,6 @@ export default function PerformanceDashboard() {
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
