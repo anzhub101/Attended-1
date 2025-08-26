@@ -340,35 +340,37 @@ export default function MoreScreen() {
             />
 
             {/* Input Area */}
-            <KeyboardAvoidingView 
-              behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-              style={styles.inputContainer}
-            >
-              <View style={styles.inputWrapper}>
-                <TextInput
-                  style={styles.textInput}
-                  placeholder="Type your message..."
-                  value={inputText}
-                  onChangeText={setInputText}
-                  multiline
-                  maxLength={500}
-                />
-                <TouchableOpacity 
-                  style={[
-                    styles.sendButton,
-                    inputText.trim() === '' && styles.sendButtonDisabled
-                  ]}
-                  onPress={sendMessage}
-                  disabled={inputText.trim() === ''}
-                >
-                  <Ionicons 
-                    name="send" 
-                    size={20} 
-                    color={inputText.trim() === '' ? '#9CA3AF' : 'white'} 
+            <View style={styles.inputContainer}>
+              <KeyboardAvoidingView 
+                behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                style={styles.keyboardAvoidingView}
+              >
+                <View style={styles.inputWrapper}>
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder="Type your message..."
+                    value={inputText}
+                    onChangeText={setInputText}
+                    multiline
+                    maxLength={500}
                   />
-                </TouchableOpacity>
-              </View>
-            </KeyboardAvoidingView>
+                  <TouchableOpacity 
+                    style={[
+                      styles.sendButton,
+                      inputText.trim() === '' && styles.sendButtonDisabled
+                    ]}
+                    onPress={sendMessage}
+                    disabled={inputText.trim() === ''}
+                  >
+                    <Ionicons 
+                      name="send" 
+                      size={20} 
+                      color={inputText.trim() === '' ? '#9CA3AF' : 'white'} 
+                    />
+                  </TouchableOpacity>
+                </View>
+              </KeyboardAvoidingView>
+            </View>
             </SafeAreaView>
           </View>
         </Modal>
@@ -659,6 +661,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
+  },
+  keyboardAvoidingView: {
+    flex: 0,
   },
   inputWrapper: {
     flexDirection: 'row',
