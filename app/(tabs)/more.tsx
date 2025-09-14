@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Modal, TextInput, KeyboardAvoidingView, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, Modal, TextInput, KeyboardAvoidingView, FlatList } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '@/contexts/AuthContext';
@@ -44,40 +44,7 @@ export default function MoreScreen() {
     }
   };
 
-  // ADU Connect menu items
-  const aduConnectItems: MenuItem[] = [
-    {
-      id: 101,
-      title: 'Events',
-      description: 'Discover and join campus events',
-      icon: 'calendar',
-      color: '#3B82F6',
-    },
-    {
-      id: 102,
-      title: 'Groups',
-      description: 'Connect with student groups and communities',
-      icon: 'people-circle',
-      color: '#10B981',
-    },
-    {
-      id: 103,
-      title: 'GYM',
-      description: 'Book gym sessions and fitness classes',
-      icon: 'fitness',
-      color: '#F59E0B',
-    },
-    {
-      id: 104,
-      title: 'Facilities',
-      description: 'Reserve campus facilities and spaces',
-      icon: 'business',
-      color: '#8B5CF6',
-    },
-  ];
-
-  // Other menu items
-  const otherMenuItems: MenuItem[] = [
+  const menuItems: MenuItem[] = [
     {
       id: 1,
       title: 'Academic Tutoring',
@@ -147,14 +114,6 @@ export default function MoreScreen() {
       return;
     }
     
-    // Handle ADU Connect items
-    if (item.id >= 101 && item.id <= 104) {
-      console.log(`Navigate to ADU Connect - ${item.title}`);
-      // Add navigation logic for ADU Connect items here
-      return;
-    }
-    
-    // Handle other menu items
     if (item.title === 'Academic Tutoring') {
       router.push('/tutoring');
     } else if (item.title === 'Performance Dashboard') {
@@ -213,49 +172,6 @@ export default function MoreScreen() {
     </View>
   );
 
-  const renderMenuItem = (item: MenuItem) => (
-    <TouchableOpacity
-      key={item.id}
-      style={[
-        styles.menuCard,
-        item.comingSoon && styles.menuCardDisabled
-      ]}
-      onPress={() => handleMenuPress(item)}
-      disabled={item.comingSoon}
-    >
-      <View style={[styles.iconContainer, { backgroundColor: item.color }]}>
-        <Ionicons name={item.icon} size={28} color="white" />
-      </View>
-      
-      <View style={styles.menuContent}>
-        <Text style={[
-          styles.menuTitle,
-          item.comingSoon && styles.menuTitleDisabled
-        ]}>
-          {item.title}
-        </Text>
-        <Text style={[
-          styles.menuDescription,
-          item.comingSoon && styles.menuDescriptionDisabled
-        ]}>
-          {item.description}
-        </Text>
-      </View>
-
-      {item.comingSoon && (
-        <View style={styles.comingSoonBadge}>
-          <Text style={styles.comingSoonText}>Soon</Text>
-        </View>
-      )}
-
-      <Ionicons 
-        name="chevron-forward" 
-        size={20} 
-        color={item.comingSoon ? '#D1D5DB' : '#9CA3AF'} 
-      />
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
@@ -271,28 +187,49 @@ export default function MoreScreen() {
         <View style={styles.contentArea}>
           {/* Menu Grid */}
           <ScrollView style={styles.menuContainer} showsVerticalScrollIndicator={false}>
-            
-            {/* ADU Connect Section */}
-            <View style={styles.sectionHeader}>
-              <View style={styles.sectionTitleContainer}>
-                <Image 
-                  source={require('@/assets/images/connect.png')} 
-                  style={styles.sectionLogo}
-                  resizeMode="contain"
-                />
-                <Text style={styles.sectionTitle}>ADU Connect</Text>
-              </View>
-            </View>
-            
-            <View style={styles.menuSection}>
-              {aduConnectItems.map(renderMenuItem)}
-            </View>
+            <View style={styles.menuGrid}>
+              {menuItems.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={[
+                    styles.menuCard,
+                    item.comingSoon && styles.menuCardDisabled
+                  ]}
+                  onPress={() => handleMenuPress(item)}
+                  disabled={item.comingSoon}
+                >
+                  <View style={[styles.iconContainer, { backgroundColor: item.color }]}>
+                    <Ionicons name={item.icon} size={28} color="white" />
+                  </View>
+                  
+                  <View style={styles.menuContent}>
+                    <Text style={[
+                      styles.menuTitle,
+                      item.comingSoon && styles.menuTitleDisabled
+                    ]}>
+                      {item.title}
+                    </Text>
+                    <Text style={[
+                      styles.menuDescription,
+                      item.comingSoon && styles.menuDescriptionDisabled
+                    ]}>
+                      {item.description}
+                    </Text>
+                  </View>
 
-            {/* Other Features Section */}
-            <View style={styles.sectionDivider} />
-            
-            <View style={styles.menuSection}>
-              {otherMenuItems.map(renderMenuItem)}
+                  {item.comingSoon && (
+                    <View style={styles.comingSoonBadge}>
+                      <Text style={styles.comingSoonText}>Soon</Text>
+                    </View>
+                  )}
+
+                  <Ionicons 
+                    name="chevron-forward" 
+                    size={20} 
+                    color={item.comingSoon ? '#D1D5DB' : '#9CA3AF'} 
+                  />
+                </TouchableOpacity>
+              ))}
             </View>
 
             {/* Logout Section */}
@@ -477,37 +414,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
   },
-  
-  // Section Header Styles
-  sectionHeader: {
-    marginBottom: 16,
+  menuGrid: {
+    marginBottom: 30,
   },
-  sectionTitleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  sectionLogo: {
-    width: 24,
-    height: 24,
-    marginRight: 12,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1F2937',
-  },
-  
-  // Menu Section Styles
-  menuSection: {
-    marginBottom: 20,
-  },
-  sectionDivider: {
-    height: 1,
-    backgroundColor: '#E5E7EB',
-    marginVertical: 20,
-    marginHorizontal: 10,
-  },
-
   menuCard: {
     flexDirection: 'row',
     alignItems: 'center',
