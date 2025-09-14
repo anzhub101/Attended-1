@@ -149,8 +149,13 @@ export default function MoreScreen() {
     
     // Handle ADU Connect items
     if (item.id >= 101 && item.id <= 104) {
-      console.log(`Navigate to ADU Connect - ${item.title}`);
-      // Add navigation logic for ADU Connect items here
+      if (item.title === 'Events') {
+        router.push('/(tabs)/events');
+      } else if (item.title === 'Groups') {
+        router.push('/groups');
+      } else {
+        console.log(`Navigate to ADU Connect - ${item.title}`);
+      }
       return;
     }
     
