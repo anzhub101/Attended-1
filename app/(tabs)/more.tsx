@@ -276,7 +276,7 @@ export default function MoreScreen() {
             <View style={styles.sectionHeader}>
               <View style={styles.sectionTitleContainer}>
                 <Image 
-                  source={require('@/assets/connect.png')} 
+                  source={require('@/assets/images/connect.png')} 
                   style={styles.sectionLogo}
                   resizeMode="contain"
                 />
