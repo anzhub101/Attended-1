@@ -15,6 +15,8 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="authenticator" options={{ headerShown: false }} />
         <Stack.Screen name="groups" options={{ headerShown: false }} />
+        <Stack.Screen name="facilities" options={{ headerShown: false }} />
+        <Stack.Screen name="gym" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="light" backgroundColor="#DC2626" />

@@ -153,6 +153,10 @@ export default function MoreScreen() {
         router.push('/(tabs)/events');
       } else if (item.title === 'Groups') {
         router.push('/groups');
+      } else if (item.title === 'Facilities') {
+        router.push('/facilities');
+      } else if (item.title === 'GYM') {
+        router.push('/gym');
       } else {
         console.log(`Navigate to ADU Connect - ${item.title}`);
       }
